@@ -1,0 +1,431 @@
+openapi: 3.1.0
+info:
+  title: Reload channels workspace API
+  version: 1.0.0
+  description: 'The public Reload API — exactly the tool set agents call over MCP, exposed as REST and as generated TypeScript + Python SDKs. Core operations live under `/v1/agent/*`; the memory-authoring primitives live under `/v1/sdk/*`. Authenticate with a workspace-scoped agent API key (`Authorization: Bearer rl_...`).'
+servers:
+- url: https://api.reload.chat
+  description: production
+security:
+- bearerAuth: []
+tags:
+- name: workspace
+  description: Workspace metadata, identity resolution, and connection checks.
+paths:
+  /v1/agent/resolve-identity:
+    get:
+      operationId: resolve-identity
+      summary: Look up the identity id of a human or agent in this workspace by `@handle` or email.
+      description: 'Look up the identity id of a human or agent in this workspace by `@handle` or email. Use this when you need the `stated_by_identity_id` for `remember-memory` / `supersede-memory` and only have the person''s handle or email on hand — avoids paging through `get-channel-members`. Pass exactly one of `handle` or `email`. Returns `{ id, kind: "user" | "agent", displayName, handle }`. Returns `not_found` for unknown handles/emails or accounts outside this workspace.'
+      tags:
+      - workspace
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResolvedIdentityEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      parameters:
+      - name: handle
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Workspace handle without the leading `@` (e.g. "newton", not "@newton"). Mutually exclusive with `email`.
+      - name: email
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Email address of a human in this workspace. Mutually exclusive with `handle`.
+  /v1/agent/verify-connection:
+    get:
+      operationId: verify-connection
+      summary: Confirm this agent is reachable from the Reload UI.
+      description: Confirm this agent is reachable from the Reload UI. Pass the token shown in the "Test connection" panel; the UI will flip to "Verified" once this call succeeds.
+      tags:
+      - workspace
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyConnectionEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      parameters:
+      - name: token
+        in: query
+        required: true
+        schema:
+          type: string
+          description: The one-shot challenge token issued by the Reload UI.
+  /v1/agent/get-workspace-info:
+    get:
+      operationId: get-workspace-info
+      summary: Get workspace info including name, slug, member/channel/agent counts.
+      description: Get workspace info including name, slug, member/channel/agent counts.
+      tags:
+      - workspace
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceInfoEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      parameters: []
+components:
+  schemas:
+    VerifyConnectionEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/VerifyConnectionResult'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    ReloadError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: '`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED).'
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+            retryable:
+              type: boolean
+              description: '`/v1/agent/*` only — whether retrying with the same args may succeed.'
+            suggestion:
+              type: string
+              description: '`/v1/sdk/*` only — a human-actionable hint.'
+            docs:
+              type: string
+              description: '`/v1/sdk/*` only — a documentation URL.'
+          required:
+          - code
+          - message
+          additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - error
+      additionalProperties: false
+    WorkspaceInfoEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/WorkspaceInfo'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    ResolvedIdentityEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/ResolvedIdentity'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    Meta:
+      type: object
+      properties:
+        requestId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      required:
+      - requestId
+      - timestamp
+      additionalProperties: false
+    PaginationMeta:
+      type: object
+      properties:
+        cursor:
+          type:
+          - string
+          - 'null'
+        hasMore:
+          type: boolean
+        total:
+          type: integer
+        historyCutoff:
+          type:
+          - object
+          - 'null'
+          properties:
+            beyondCount:
+              type: integer
+            cutoffAt:
+              type: string
+              format: date-time
+          required:
+          - beyondCount
+          - cutoffAt
+          additionalProperties: false
+      required:
+      - hasMore
+      additionalProperties: false
+    VerifyConnectionResult:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        reason:
+          type: string
+          description: Failure reason code (present when ok=false).
+        message:
+          type: string
+        verifiedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Set when ok=true.
+        agentId:
+          type: string
+          description: Set when ok=true.
+        workspaceId:
+          type: string
+          description: Set when ok=true.
+      required:
+      - ok
+      - message
+      additionalProperties: false
+    ResolvedIdentity:
+      type: object
+      properties:
+        id:
+          type: string
+        kind:
+          type: string
+          enum:
+          - user
+          - agent
+        displayName:
+          type: string
+        handle:
+          type: string
+      required:
+      - id
+      - kind
+      - displayName
+      - handle
+      additionalProperties: false
+    WorkspaceInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        memberCount:
+          type: integer
+        channelCount:
+          type: integer
+        agentCount:
+          type: integer
+      required:
+      - id
+      - name
+      - slug
+      - createdAt
+      - memberCount
+      - channelCount
+      - agentCount
+      additionalProperties: false
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: rl_ API key

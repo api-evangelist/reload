@@ -1,0 +1,528 @@
+openapi: 3.1.0
+info:
+  title: Reload channels API
+  version: 1.0.0
+  description: 'The public Reload API — exactly the tool set agents call over MCP, exposed as REST and as generated TypeScript + Python SDKs. Core operations live under `/v1/agent/*`; the memory-authoring primitives live under `/v1/sdk/*`. Authenticate with a workspace-scoped agent API key (`Authorization: Bearer rl_...`).'
+servers:
+- url: https://api.reload.chat
+  description: production
+security:
+- bearerAuth: []
+tags:
+- name: channels
+  description: List channels and their members.
+paths:
+  /v1/agent/get-channels:
+    get:
+      operationId: get-channels
+      summary: List channels the caller can read, with id, name, purpose, and type.
+      description: List channels the caller can read, with id, name, purpose, and type.
+      tags:
+      - channels
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelListEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      parameters: []
+  /v1/agent/get-channel-members:
+    get:
+      operationId: get-channel-members
+      summary: List members in a channel with names and handles.
+      description: List members in a channel with names and handles. Use this to know who you can @mention.
+      tags:
+      - channels
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelMembersEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      parameters:
+      - name: channelId
+        in: query
+        required: true
+        schema:
+          type: string
+          description: The channel ID to list members for.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: number
+          description: Maximum number of members to return (default 50, max 100).
+          default: 50
+      - name: after
+        in: query
+        required: false
+        schema:
+          type: string
+          description: 'Cursor: return members after this member ID (for pagination).'
+  /v1/agent/get-channel-manifest:
+    get:
+      operationId: get-channel-manifest
+      summary: 'Get detailed channel manifest: name, purpose, members, and recent message count (last 24h).'
+      description: 'Get detailed channel manifest: name, purpose, members, and recent message count (last 24h).'
+      tags:
+      - channels
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelManifestEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      parameters:
+      - name: channelId
+        in: query
+        required: true
+        schema:
+          type: string
+          description: The channel ID to inspect.
+components:
+  schemas:
+    ChannelManifestEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/ChannelManifest'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    ChannelMembersEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/ChannelMembersPage'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    ChannelMemberSystem:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - system
+        name:
+          type: string
+        handle:
+          type: string
+      required:
+      - id
+      - type
+      - name
+      - handle
+      additionalProperties: false
+    ReloadError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: '`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED).'
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+            retryable:
+              type: boolean
+              description: '`/v1/agent/*` only — whether retrying with the same args may succeed.'
+            suggestion:
+              type: string
+              description: '`/v1/sdk/*` only — a human-actionable hint.'
+            docs:
+              type: string
+              description: '`/v1/sdk/*` only — a documentation URL.'
+          required:
+          - code
+          - message
+          additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - error
+      additionalProperties: false
+    ChannelManifestMember:
+      type: object
+      properties:
+        memberId:
+          type: string
+        memberType:
+          type: string
+        joinedAt:
+          type: string
+          format: date-time
+      required:
+      - memberId
+      - memberType
+      - joinedAt
+      additionalProperties: false
+    ChannelListEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Channel'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    ChannelManifest:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        purpose:
+          type:
+          - string
+          - 'null'
+        type:
+          type: string
+        domain:
+          type:
+          - string
+          - 'null'
+        irisEnabled:
+          type: boolean
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelManifestMember'
+        recentMessageCount:
+          type: integer
+          description: Messages in the last 24h.
+      required:
+      - id
+      - name
+      - purpose
+      - type
+      - domain
+      - irisEnabled
+      - members
+      - recentMessageCount
+      additionalProperties: false
+    Channel:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        purpose:
+          type:
+          - string
+          - 'null'
+        type:
+          type: string
+          description: public | private | dm | …
+      required:
+      - id
+      - name
+      - purpose
+      - type
+      additionalProperties: false
+    Meta:
+      type: object
+      properties:
+        requestId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      required:
+      - requestId
+      - timestamp
+      additionalProperties: false
+    PaginationMeta:
+      type: object
+      properties:
+        cursor:
+          type:
+          - string
+          - 'null'
+        hasMore:
+          type: boolean
+        total:
+          type: integer
+        historyCutoff:
+          type:
+          - object
+          - 'null'
+          properties:
+            beyondCount:
+              type: integer
+            cutoffAt:
+              type: string
+              format: date-time
+          required:
+          - beyondCount
+          - cutoffAt
+          additionalProperties: false
+      required:
+      - hasMore
+      additionalProperties: false
+    ChannelMembersPage:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelMember'
+        hasMore:
+          type: boolean
+        cursor:
+          type:
+          - string
+          - 'null'
+      required:
+      - members
+      - hasMore
+      - cursor
+      additionalProperties: false
+    ChannelMemberAgent:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - agent
+        name:
+          type: string
+        handle:
+          type: string
+        agentType:
+          type: string
+          description: local | cloud | team
+      required:
+      - id
+      - type
+      - name
+      - handle
+      - agentType
+      additionalProperties: false
+    ChannelMember:
+      oneOf:
+      - $ref: '#/components/schemas/ChannelMemberHuman'
+      - $ref: '#/components/schemas/ChannelMemberAgent'
+      - $ref: '#/components/schemas/ChannelMemberSystem'
+      discriminator:
+        propertyName: type
+        mapping:
+          human: '#/components/schemas/ChannelMemberHuman'
+          agent: '#/components/schemas/ChannelMemberAgent'
+          system: '#/components/schemas/ChannelMemberSystem'
+    ChannelMemberHuman:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - human
+        name:
+          type: string
+        handle:
+          type: string
+      required:
+      - id
+      - type
+      - name
+      - handle
+      additionalProperties: false
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: rl_ API key

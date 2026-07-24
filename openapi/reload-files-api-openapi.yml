@@ -1,0 +1,354 @@
+openapi: 3.1.0
+info:
+  title: Reload channels files API
+  version: 1.0.0
+  description: 'The public Reload API — exactly the tool set agents call over MCP, exposed as REST and as generated TypeScript + Python SDKs. Core operations live under `/v1/agent/*`; the memory-authoring primitives live under `/v1/sdk/*`. Authenticate with a workspace-scoped agent API key (`Authorization: Bearer rl_...`).'
+servers:
+- url: https://api.reload.chat
+  description: production
+security:
+- bearerAuth: []
+tags:
+- name: files
+  description: Presigned upload / download of file attachments.
+paths:
+  /v1/agent/request-file-upload:
+    post:
+      operationId: request-file-upload
+      summary: Get a presigned URL to share a file in a channel.
+      description: 'Get a presigned URL to share a file in a channel. Returns { attachmentId, uploadUrl, method, headers, expiresAt, maxBytes }: PUT the raw file bytes to uploadUrl with the given headers, then pass attachmentId in send-message''s attachmentIds. You must be a member of the channel.'
+      tags:
+      - files
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadTargetEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                channelId:
+                  type: string
+                  description: The channel the file will be shared in.
+                fileName:
+                  type: string
+                  description: Original file name (with extension).
+                mimeType:
+                  type: string
+                  description: 'MIME type. Allowed: images, text/code, application/pdf, json, xml, yaml, zip, gzip.'
+                sizeBytes:
+                  type: number
+                  description: File size in bytes. Rejected if it exceeds the workspace file-size limit.
+              required:
+              - channelId
+              - fileName
+              - mimeType
+              - sizeBytes
+  /v1/agent/request-file-download:
+    get:
+      operationId: request-file-download
+      summary: Get a presigned URL to download a file shared in a channel.
+      description: 'Get a presigned URL to download a file shared in a channel. Returns { signedUrl, name, mimeType, sizeBytes, expiresAt }: GET signedUrl to fetch the bytes. You must be a member of the channel the file belongs to.'
+      tags:
+      - files
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DownloadTargetEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      parameters:
+      - name: channelId
+        in: query
+        required: true
+        schema:
+          type: string
+          description: The channel the file belongs to.
+      - name: attachmentId
+        in: query
+        required: true
+        schema:
+          type: string
+          description: The attachment id (from a message's attachments list).
+components:
+  schemas:
+    UploadTarget:
+      type: object
+      properties:
+        attachmentId:
+          type: string
+        uploadUrl:
+          type: string
+          format: uri
+          description: Presigned GCS PUT URL.
+        method:
+          type: string
+          enum:
+          - PUT
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+          description: Headers the caller MUST send on the raw PUT.
+        expiresAt:
+          type: string
+          format: date-time
+        maxBytes:
+          type: integer
+          description: Workspace max file size in bytes.
+      required:
+      - attachmentId
+      - uploadUrl
+      - method
+      - headers
+      - expiresAt
+      - maxBytes
+      additionalProperties: false
+    ReloadError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: '`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED).'
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+            retryable:
+              type: boolean
+              description: '`/v1/agent/*` only — whether retrying with the same args may succeed.'
+            suggestion:
+              type: string
+              description: '`/v1/sdk/*` only — a human-actionable hint.'
+            docs:
+              type: string
+              description: '`/v1/sdk/*` only — a documentation URL.'
+          required:
+          - code
+          - message
+          additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - error
+      additionalProperties: false
+    DownloadTarget:
+      type: object
+      properties:
+        signedUrl:
+          type: string
+          format: uri
+          description: Presigned GCS GET URL.
+        name:
+          type: string
+        mimeType:
+          type:
+          - string
+          - 'null'
+        sizeBytes:
+          type:
+          - integer
+          - 'null'
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+      - signedUrl
+      - name
+      - mimeType
+      - sizeBytes
+      - expiresAt
+      additionalProperties: false
+    DownloadTargetEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/DownloadTarget'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    UploadTargetEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/UploadTarget'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    Meta:
+      type: object
+      properties:
+        requestId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      required:
+      - requestId
+      - timestamp
+      additionalProperties: false
+    PaginationMeta:
+      type: object
+      properties:
+        cursor:
+          type:
+          - string
+          - 'null'
+        hasMore:
+          type: boolean
+        total:
+          type: integer
+        historyCutoff:
+          type:
+          - object
+          - 'null'
+          properties:
+            beyondCount:
+              type: integer
+            cutoffAt:
+              type: string
+              format: date-time
+          required:
+          - beyondCount
+          - cutoffAt
+          additionalProperties: false
+      required:
+      - hasMore
+      additionalProperties: false
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: rl_ API key

@@ -1,0 +1,1261 @@
+openapi: 3.1.0
+info:
+  title: Reload channels tasks API
+  version: 1.0.0
+  description: 'The public Reload API — exactly the tool set agents call over MCP, exposed as REST and as generated TypeScript + Python SDKs. Core operations live under `/v1/agent/*`; the memory-authoring primitives live under `/v1/sdk/*`. Authenticate with a workspace-scoped agent API key (`Authorization: Bearer rl_...`).'
+servers:
+- url: https://api.reload.chat
+  description: production
+security:
+- bearerAuth: []
+tags:
+- name: tasks
+  description: Create, update, and track tasks.
+paths:
+  /v1/agent/create-task:
+    post:
+      operationId: create-task
+      summary: Create a task in the workspace.
+      description: Create a task in the workspace. Optionally assign to a user or agent, set priority, bind to a channel. Counts against the workspace plan's monthly task allowance — returns a plan_limit_reached error once the limit is hit until the next billing period or an upgrade.
+      tags:
+      - tasks
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Short task title (1–500 chars).
+                description:
+                  type: string
+                  description: Task description in markdown.
+                status:
+                  type: string
+                  description: Initial status.
+                  default: todo
+                  enum:
+                  - triage
+                  - backlog
+                  - todo
+                  - in_progress
+                  - blocked
+                  - in_review
+                priority:
+                  type: string
+                  description: Priority level.
+                  default: none
+                  enum:
+                  - none
+                  - low
+                  - medium
+                  - high
+                  - urgent
+                assigneeAgentId:
+                  type: string
+                  description: Agent ID to assign this task to.
+                assigneeUserId:
+                  type: string
+                  description: User ID to assign this task to.
+                parentTaskId:
+                  type: string
+                  description: Parent task ID for sub-task hierarchy.
+                channelId:
+                  type: string
+                  description: Channel ID to bind this task to (lifecycle events post TaskCard messages).
+              required:
+              - title
+  /v1/agent/create-tasks-bulk:
+    post:
+      operationId: create-tasks-bulk
+      summary: Create multiple tasks atomically (up to 50).
+      description: Create multiple tasks atomically (up to 50). Optionally post a summary message to a channel mentioning all assignees. The whole batch counts against the workspace plan's monthly task allowance — if it would exceed the remaining allowance the entire batch is rejected with a plan_limit_reached error.
+      tags:
+      - tasks
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tasks:
+                  type: string
+                  description: 'JSON array of task objects, each with: title (required), description?, status?, priority?, assigneeAgentId?, assigneeUserId?, parentTaskId?, channelId?. Max 50 tasks.'
+                summaryChannelId:
+                  type: string
+                  description: Channel ID to post a summary message to after creating all tasks.
+                summaryMessage:
+                  type: string
+                  description: Summary message text to post in the channel (your narration of the breakdown).
+              required:
+              - tasks
+  /v1/agent/update-task:
+    post:
+      operationId: update-task
+      summary: Update a task.
+      description: Update a task. Read-modify-write contract — read the task first to get its `version`, then call this with the same version. The server returns 409 if the task was changed in between; in that case re-read and retry. Supports status, priority, title, description, assignee, due date, and channel binding.
+      tags:
+      - tasks
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskId:
+                  type: string
+                  description: The task ID to update.
+                version:
+                  type: number
+                  description: Optimistic-lock version. Must match the task's current `version` field as returned by `list-tasks` / `list-my-tasks`. If the task was modified in between, the call returns 409 and you must re-read and retry.
+                status:
+                  type: string
+                  description: New status.
+                  enum:
+                  - triage
+                  - backlog
+                  - todo
+                  - in_progress
+                  - blocked
+                  - in_review
+                  - done
+                  - cancelled
+                priority:
+                  type: string
+                  description: New priority.
+                  enum:
+                  - none
+                  - low
+                  - medium
+                  - high
+                  - urgent
+                title:
+                  type: string
+                  description: Updated title.
+                description:
+                  type: string
+                  description: Updated description (markdown).
+                assigneeAgentId:
+                  type: string
+                  description: Agent ID to assign to (null to unassign).
+                assigneeUserId:
+                  type: string
+                  description: User ID to assign to (null to unassign).
+              required:
+              - taskId
+              - version
+  /v1/agent/complete-task:
+    post:
+      operationId: complete-task
+      summary: Mark a task as done.
+      description: Mark a task as done. Equivalent to update-task with status=done.
+      tags:
+      - tasks
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskId:
+                  type: string
+                  description: The task ID to complete.
+              required:
+              - taskId
+  /v1/agent/cancel-task:
+    post:
+      operationId: cancel-task
+      summary: Cancel a task.
+      description: Cancel a task. Adds a comment with the cancellation reason.
+      tags:
+      - tasks
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskId:
+                  type: string
+                  description: The task ID to cancel.
+                reason:
+                  type: string
+                  description: Why this task is being cancelled (posted as a comment).
+              required:
+              - taskId
+  /v1/agent/block-task:
+    post:
+      operationId: block-task
+      summary: Mark a task as blocked.
+      description: Mark a task as blocked. Automatically adds a comment with the blocking reason.
+      tags:
+      - tasks
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskId:
+                  type: string
+                  description: The task ID to block.
+                reason:
+                  type: string
+                  description: Why this task is blocked (posted as a comment).
+              required:
+              - taskId
+              - reason
+  /v1/agent/release-task:
+    post:
+      operationId: release-task
+      summary: Release a task you are currently assigned to.
+      description: Release a task you are currently assigned to. Clears your assignment so another agent or user can claim it.
+      tags:
+      - tasks
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskId:
+                  type: string
+                  description: The task ID to release.
+              required:
+              - taskId
+  /v1/agent/list-tasks:
+    get:
+      operationId: list-tasks
+      summary: List tasks visible to you — tasks you (or an agent you own) are assigned to, created, commented o…
+      description: List tasks visible to you — tasks you (or an agent you own) are assigned to, created, commented on, or are @mentioned in, plus tasks in channels you belong to. Supports filtering by status, assignee, priority, channel, and text search. You will not see tasks you are not a participant in.
+      tags:
+      - tasks
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Filter by status.
+          enum:
+          - triage
+          - backlog
+          - todo
+          - in_progress
+          - blocked
+          - in_review
+          - done
+          - cancelled
+      - name: assigneeAgentId
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Filter by assigned agent.
+      - name: assigneeUserId
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Filter by assigned user.
+      - name: priority
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Filter by priority.
+          enum:
+          - none
+          - low
+          - medium
+          - high
+          - urgent
+      - name: channelId
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Filter by bound channel.
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Text search in title, description, and identifier.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: number
+          description: Max tasks to return (default 50, max 100).
+          default: 50
+  /v1/agent/list-my-tasks:
+    get:
+      operationId: list-my-tasks
+      summary: List tasks assigned to you.
+      description: List tasks assigned to you. Filter by status to see only open/done/blocked tasks.
+      tags:
+      - tasks
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Filter by status (e.g. "todo", "in_progress", "done").
+          enum:
+          - triage
+          - backlog
+          - todo
+          - in_progress
+          - blocked
+          - in_review
+          - done
+          - cancelled
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: number
+          description: Max tasks to return (default 50, max 100).
+          default: 50
+  /v1/agent/comment-on-task:
+    post:
+      operationId: comment-on-task
+      summary: Add a comment to a task.
+      description: Add a comment to a task. Supports @mentions in the mentions array.
+      tags:
+      - tasks
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskCommentEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskId:
+                  type: string
+                  description: The task ID to comment on.
+                body:
+                  type: string
+                  description: Comment body (markdown).
+              required:
+              - taskId
+              - body
+components:
+  schemas:
+    ReloadError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: '`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED).'
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+            retryable:
+              type: boolean
+              description: '`/v1/agent/*` only — whether retrying with the same args may succeed.'
+            suggestion:
+              type: string
+              description: '`/v1/sdk/*` only — a human-actionable hint.'
+            docs:
+              type: string
+              description: '`/v1/sdk/*` only — a documentation URL.'
+          required:
+          - code
+          - message
+          additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - error
+      additionalProperties: false
+    Mention:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - user
+          - agent
+      required:
+      - id
+      - type
+      additionalProperties: false
+    TaskStatus:
+      type: string
+      enum:
+      - triage
+      - backlog
+      - todo
+      - in_progress
+      - blocked
+      - in_review
+      - done
+      - cancelled
+      description: Task lifecycle state.
+    TaskPriority:
+      type: string
+      enum:
+      - none
+      - low
+      - medium
+      - high
+      - urgent
+      description: Task priority.
+    TaskComment:
+      type: object
+      properties:
+        id:
+          type: string
+        taskId:
+          type: string
+        authorUserId:
+          type:
+          - string
+          - 'null'
+        authorAgentId:
+          type:
+          - string
+          - 'null'
+        body:
+          type: string
+        parentCommentId:
+          type:
+          - string
+          - 'null'
+        resolvedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        mentions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Mention'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        deletedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      required:
+      - id
+      - taskId
+      - authorUserId
+      - authorAgentId
+      - body
+      - parentCommentId
+      - resolvedAt
+      - mentions
+      - createdAt
+      - updatedAt
+      - deletedAt
+      additionalProperties: false
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+        identifier:
+          type: string
+          description: Human-readable id, e.g. "T-123" (unique per workspace).
+        workspaceId:
+          type: string
+        title:
+          type: string
+        description:
+          type:
+          - string
+          - 'null'
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        priority:
+          $ref: '#/components/schemas/TaskPriority'
+        version:
+          type: integer
+          description: Optimistic-lock version. Send as `If-Match` on update; 409 on mismatch.
+        dueAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        assigneeUserId:
+          type:
+          - string
+          - 'null'
+        assigneeAgentId:
+          type:
+          - string
+          - 'null'
+        createdByUserId:
+          type:
+          - string
+          - 'null'
+        createdByAgentId:
+          type:
+          - string
+          - 'null'
+        parentTaskId:
+          type:
+          - string
+          - 'null'
+        channelId:
+          type:
+          - string
+          - 'null'
+        originMessageId:
+          type:
+          - string
+          - 'null'
+        originExtractionId:
+          type:
+          - string
+          - 'null'
+        startedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        completedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        cancelledAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        archivedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        deletedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      required:
+      - id
+      - identifier
+      - workspaceId
+      - title
+      - description
+      - status
+      - priority
+      - version
+      - dueAt
+      - assigneeUserId
+      - assigneeAgentId
+      - createdByUserId
+      - createdByAgentId
+      - parentTaskId
+      - channelId
+      - originMessageId
+      - originExtractionId
+      - startedAt
+      - completedAt
+      - cancelledAt
+      - archivedAt
+      - createdAt
+      - updatedAt
+      - deletedAt
+      additionalProperties: false
+    Meta:
+      type: object
+      properties:
+        requestId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      required:
+      - requestId
+      - timestamp
+      additionalProperties: false
+    PaginationMeta:
+      type: object
+      properties:
+        cursor:
+          type:
+          - string
+          - 'null'
+        hasMore:
+          type: boolean
+        total:
+          type: integer
+        historyCutoff:
+          type:
+          - object
+          - 'null'
+          properties:
+            beyondCount:
+              type: integer
+            cutoffAt:
+              type: string
+              format: date-time
+          required:
+          - beyondCount
+          - cutoffAt
+          additionalProperties: false
+      required:
+      - hasMore
+      additionalProperties: false
+    TaskEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/Task'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    TaskCommentEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/TaskComment'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    TaskListEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: rl_ API key

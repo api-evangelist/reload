@@ -1,0 +1,1394 @@
+openapi: 3.1.0
+info:
+  title: Reload channels memory API
+  version: 1.0.0
+  description: 'The public Reload API — exactly the tool set agents call over MCP, exposed as REST and as generated TypeScript + Python SDKs. Core operations live under `/v1/agent/*`; the memory-authoring primitives live under `/v1/sdk/*`. Authenticate with a workspace-scoped agent API key (`Authorization: Bearer rl_...`).'
+servers:
+- url: https://api.reload.chat
+  description: production
+security:
+- bearerAuth: []
+tags:
+- name: memory
+  description: Author and recall the workspace context graph.
+paths:
+  /v1/agent/search-memories:
+    get:
+      operationId: search-memories
+      summary: Structured filter over the workspace context graph (Memory nodes).
+      description: Structured filter over the workspace context graph (Memory nodes). Filter by kind / status / tags / date range / scope. Pair with recall for semantic ANN. Bounded by scope-membership ACL.
+      tags:
+      - memory
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchMemoriesEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+      parameters:
+      - name: kind
+        in: query
+        required: false
+        schema:
+          type: string
+          description: 'Memory.kind: decision | fact | preference.'
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          description: 'Memory.status: current | proposed | superseded | contested | expired | invalidated. Default: current.'
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Substring search against Memory.content. Case-insensitive. Use recall for semantic search.
+      - name: tags
+        in: query
+        required: false
+        schema:
+          type: array
+          description: Tag list. Matches when ALL listed tags are present in metadata.tags. Up to 20 tags.
+          items:
+            type: string
+        style: form
+        explode: true
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: string
+          description: ISO-8601 inclusive lower bound on createdAt.
+      - name: to
+        in: query
+        required: false
+        schema:
+          type: string
+          description: ISO-8601 exclusive upper bound on createdAt.
+      - name: scope_id
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Optional scope to restrict results to. Caller must have CAN_READ on the scope or the call returns 403.
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Opaque pagination cursor returned by a previous call.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: number
+          description: Maximum hits per page. Default 20, max 100.
+          default: 20
+  /v1/sdk/remember:
+    post:
+      operationId: remember-memory
+      summary: Capture a Memory with provenance.
+      description: Author a Memory (decision / fact / preference) into a scope. Requires ≥1 `derived_from` provenance pointer — a memory without provenance is a hallucination with metadata.
+      tags:
+      - memory
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RememberRequest'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemoryOutputEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+  /v1/sdk/supersede:
+    post:
+      operationId: supersede-memory
+      summary: Replace a Memory (optimistic-locked).
+      description: Supersede an existing Memory with a new version. `expected_version` guards against concurrent writes — a mismatch returns 409 VERSION_CONFLICT.
+      tags:
+      - memory
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupersedeRequest'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemoryOutputEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+  /v1/sdk/invalidate:
+    post:
+      operationId: invalidate-memory
+      summary: Retract a Memory.
+      description: Mark a Memory invalidated with a reason. Optimistic-locked via `expected_version`. Reversible with revalidate-memory.
+      tags:
+      - memory
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvalidateRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemoryOutputEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+  /v1/sdk/revalidate:
+    post:
+      operationId: revalidate-memory
+      summary: Undo a prior invalidate.
+      description: Revert an invalidated Memory back to current. Optimistic-locked via `expected_version`.
+      tags:
+      - memory
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevalidateRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemoryOutputEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+  /v1/sdk/link:
+    post:
+      operationId: link-nodes
+      summary: Create a typed edge between two nodes.
+      description: Create a typed edge in the context graph. Pass `to_type` explicitly when linking to a non-Memory node, or the edge silently lands as Memory→Memory.
+      tags:
+      - memory
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinkRequest'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EdgeOutputEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+  /v1/sdk/flag-contradiction:
+    post:
+      operationId: flag-contradiction
+      summary: Assert two Memories contradict.
+      description: Record a CONTRADICTS edge between two Memories with an explanatory note.
+      tags:
+      - memory
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FlagContradictionRequest'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EdgeOutputEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+  /v1/sdk/recall:
+    post:
+      operationId: recall
+      summary: Recall memories semantically or by neighborhood walk.
+      description: Retrieve a ranked subgraph. Provide exactly one of `query` (semantic ANN) or `seed_id` (BFS neighborhood walk). Returns flat hits, the edges linking them, ranking scores, and provenance messages.
+      tags:
+      - memory
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecallRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecallSubgraphEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+  /v1/sdk/bootstrap-context:
+    post:
+      operationId: bootstrap-context
+      summary: Load an agent’s starting context.
+      description: Return the current decisions, active constraints, open questions, scope membership, and a recent-activity summary for an agent identity — the orientation payload an agent loads at the start of a session.
+      tags:
+      - memory
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BootstrapContextRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BootstrapContextEnvelope'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '403':
+          description: Permission denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '409':
+          description: Conflict (e.g. optimistic-lock version mismatch).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '429':
+          description: Rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+        '503':
+          description: Upstream unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReloadError'
+components:
+  schemas:
+    EdgeType:
+      type: string
+      enum:
+      - OWNS
+      - OPERATED_BY
+      - MEMBER_OF
+      - IN_SCOPE
+      - IN_CHANNEL
+      - AUTHORED
+      - IN_THREAD
+      - MENTIONS
+      - DERIVED_FROM
+      - STATED_BY
+      - SUPERSEDES
+      - CONTRADICTS
+      - SUPPORTS
+      - REFERENCES
+      - CAN_READ
+      - CAN_WRITE
+      description: Locked context-graph edge catalogue.
+    FlagContradictionRequest:
+      type: object
+      properties:
+        a_id:
+          type: string
+        b_id:
+          type: string
+        note:
+          type: string
+      required:
+      - a_id
+      - b_id
+      - note
+      additionalProperties: false
+    ReloadError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: '`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED).'
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+            retryable:
+              type: boolean
+              description: '`/v1/agent/*` only — whether retrying with the same args may succeed.'
+            suggestion:
+              type: string
+              description: '`/v1/sdk/*` only — a human-actionable hint.'
+            docs:
+              type: string
+              description: '`/v1/sdk/*` only — a documentation URL.'
+          required:
+          - code
+          - message
+          additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - error
+      additionalProperties: false
+    MessageOutput:
+      type: object
+      properties:
+        id:
+          type: string
+        channel_id:
+          type: string
+        thread_id:
+          type:
+          - string
+          - 'null'
+        author_identity_id:
+          type: string
+        kind:
+          type: string
+        content:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
+        version:
+          type: integer
+      required:
+      - id
+      - channel_id
+      - thread_id
+      - author_identity_id
+      - kind
+      - content
+      - metadata
+      - created_at
+      - version
+      additionalProperties: false
+    Meta:
+      type: object
+      properties:
+        requestId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      required:
+      - requestId
+      - timestamp
+      additionalProperties: false
+    RecallFilters:
+      type: object
+      properties:
+        kind:
+          $ref: '#/components/schemas/MemoryKind'
+        include_superseded:
+          type: boolean
+          default: false
+        include_invalidated:
+          type: boolean
+          default: false
+        include_expired:
+          type: boolean
+          default: false
+        min_confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        min_similarity:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Cosine-similarity floor in [0,1].
+      additionalProperties: false
+    BootstrapContextEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/BootstrapContext'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    TtlPreset:
+      type: string
+      enum:
+      - VOLATILE
+      - ACTIVE
+      - STABLE
+      description: 'Named TTL bucket: 7d / 90d / 365d.'
+    MemoryKind:
+      type: string
+      enum:
+      - decision
+      - fact
+      - preference
+      description: Memory node kind (locked V1 vocabulary).
+    LinkToType:
+      type: string
+      enum:
+      - memory
+      - message
+      - artifact
+      - identity
+      description: Target node kind for a generic edge.
+    DerivedFromRef:
+      type: object
+      properties:
+        kind:
+          $ref: '#/components/schemas/DerivedFromKind'
+        id:
+          type: string
+      required:
+      - kind
+      - id
+      additionalProperties: false
+    ScopeRef:
+      type: object
+      properties:
+        id:
+          type: string
+        org_id:
+          type: string
+        kind:
+          $ref: '#/components/schemas/ScopeKind'
+        name:
+          type: string
+      required:
+      - id
+      - org_id
+      - kind
+      - name
+      additionalProperties: false
+    EdgeOutput:
+      type: object
+      properties:
+        id:
+          type: string
+        from_id:
+          type: string
+        from_type:
+          type: string
+        to_id:
+          type: string
+        to_type:
+          type: string
+        edge_type:
+          $ref: '#/components/schemas/EdgeType'
+        properties:
+          type: object
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - from_id
+      - from_type
+      - to_id
+      - to_type
+      - edge_type
+      - properties
+      - created_at
+      additionalProperties: false
+    EdgeOutputEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/EdgeOutput'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    RevalidateRequest:
+      type: object
+      properties:
+        memory_id:
+          type: string
+        expected_version:
+          type: integer
+      required:
+      - memory_id
+      - expected_version
+      additionalProperties: false
+    MemoryOutputEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/MemoryOutput'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    LinkRequest:
+      type: object
+      properties:
+        from_id:
+          type: string
+        to_id:
+          type: string
+        edge_type:
+          $ref: '#/components/schemas/EdgeType'
+        to_type:
+          $ref: '#/components/schemas/LinkToType'
+        properties:
+          type: object
+          additionalProperties: true
+      required:
+      - from_id
+      - to_id
+      - edge_type
+      additionalProperties: false
+    MemoryOutput:
+      type: object
+      properties:
+        id:
+          type: string
+        org_id:
+          type: string
+        kind:
+          $ref: '#/components/schemas/MemoryKind'
+        status:
+          $ref: '#/components/schemas/MemoryStatus'
+        content:
+          type: string
+        confidence:
+          type: number
+          description: 0–1.
+        version:
+          type: integer
+        ttl_seconds:
+          type:
+          - integer
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+        last_reinforced_at:
+          type: string
+          format: date-time
+        expires_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        invalidated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        invalidated_by:
+          type:
+          - string
+          - 'null'
+        invalidated_reason:
+          type:
+          - string
+          - 'null'
+        content_hash:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+      required:
+      - id
+      - org_id
+      - kind
+      - status
+      - content
+      - confidence
+      - version
+      - ttl_seconds
+      - created_at
+      - last_reinforced_at
+      - expires_at
+      - invalidated_at
+      - invalidated_by
+      - invalidated_reason
+      - content_hash
+      - metadata
+      additionalProperties: false
+    BootstrapContextRequest:
+      type: object
+      properties:
+        agent_identity_id:
+          type: string
+        scope_id:
+          type: string
+      required:
+      - agent_identity_id
+      additionalProperties: false
+    SearchMemoriesResponse:
+      type: object
+      properties:
+        hits:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemoryOutput'
+        nextCursor:
+          type:
+          - string
+          - 'null'
+      required:
+      - hits
+      - nextCursor
+      additionalProperties: false
+    InvalidateRequest:
+      type: object
+      properties:
+        memory_id:
+          type: string
+        expected_version:
+          type: integer
+        reason:
+          type: string
+      required:
+      - memory_id
+      - expected_version
+      - reason
+      additionalProperties: false
+    RecallExpansion:
+      type: string
+      enum:
+      - provenance
+      - related
+      description: Edge-expansion mode for recall.
+    SearchMemoriesEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/SearchMemoriesResponse'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    RecallSubgraphEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/RecallSubgraph'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    ScopeKind:
+      type: string
+      enum:
+      - org
+      - team
+      - project
+      - channel
+      description: Scope hierarchy level.
+    RememberRequest:
+      type: object
+      properties:
+        content:
+          type: string
+        kind:
+          $ref: '#/components/schemas/MemoryKind'
+        scope_id:
+          type: string
+        derived_from:
+          type: array
+          items:
+            $ref: '#/components/schemas/DerivedFromRef'
+          minItems: 1
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+          default: 1
+        ttl_seconds:
+          type: integer
+          description: Raw TTL. Provide this OR ttl_preset, not both.
+        ttl_preset:
+          $ref: '#/components/schemas/TtlPreset'
+        stated_by_identity_id:
+          type: string
+        where:
+          type: string
+          description: 5W "Where" — origin context the claim was made in.
+        why:
+          type: string
+          description: 5W "Why" — reason the claim was captured.
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Free-form JSON metadata. Capped at 4KB serialized (server rejects oversize).
+      required:
+      - content
+      - kind
+      - scope_id
+      - derived_from
+      additionalProperties: false
+    SupersedeRequest:
+      type: object
+      properties:
+        old_memory_id:
+          type: string
+        expected_version:
+          type: integer
+          description: Optimistic-lock guard. Mismatch → 409.
+        new_content:
+          type: string
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+          default: 1
+        derived_from:
+          type: array
+          items:
+            $ref: '#/components/schemas/DerivedFromRef'
+          minItems: 1
+        ttl_seconds:
+          type: integer
+        ttl_preset:
+          $ref: '#/components/schemas/TtlPreset'
+        stated_by_identity_id:
+          type: string
+        where:
+          type: string
+        why:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Free-form JSON metadata. Capped at 4KB serialized (server rejects oversize).
+      required:
+      - old_memory_id
+      - expected_version
+      - new_content
+      - derived_from
+      additionalProperties: false
+    RecallSubgraph:
+      type: object
+      properties:
+        hits:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemoryOutput'
+        edges:
+          type: array
+          items:
+            $ref: '#/components/schemas/EdgeOutput'
+        scores:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecallScore'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageOutput'
+      required:
+      - hits
+      - edges
+      - scores
+      additionalProperties: false
+    RecallScore:
+      type: object
+      properties:
+        memory_id:
+          type: string
+        total:
+          type: number
+        similarity:
+          type: number
+        confidence_bonus:
+          type: number
+        recency_penalty:
+          type: number
+        supersession_penalty:
+          type: number
+      required:
+      - memory_id
+      - total
+      - similarity
+      - confidence_bonus
+      - recency_penalty
+      - supersession_penalty
+      additionalProperties: false
+    MemoryStatus:
+      type: string
+      enum:
+      - current
+      - proposed
+      - superseded
+      - contested
+      - expired
+      - invalidated
+      description: Memory state-machine status.
+    RecallRequest:
+      type: object
+      properties:
+        query:
+          type: string
+          description: Semantic query. Provide exactly one of query or seed_id.
+        seed_id:
+          type: string
+          description: Neighborhood-walk seed. Provide exactly one of query or seed_id.
+        depth:
+          type: integer
+          minimum: 1
+          maximum: 3
+          description: BFS walk depth (with seed_id).
+        scope_id:
+          type: string
+        expand:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecallExpansion'
+          default:
+          - provenance
+          - related
+        filters:
+          $ref: '#/components/schemas/RecallFilters'
+        metadata_filter:
+          type: object
+          additionalProperties: true
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      additionalProperties: false
+    DerivedFromKind:
+      type: string
+      enum:
+      - message
+      - artifact
+      - memory
+      description: Polymorphic target kind for a provenance pointer.
+    PaginationMeta:
+      type: object
+      properties:
+        cursor:
+          type:
+          - string
+          - 'null'
+        hasMore:
+          type: boolean
+        total:
+          type: integer
+        historyCutoff:
+          type:
+          - object
+          - 'null'
+          properties:
+            beyondCount:
+              type: integer
+            cutoffAt:
+              type: string
+              format: date-time
+          required:
+          - beyondCount
+          - cutoffAt
+          additionalProperties: false
+      required:
+      - hasMore
+      additionalProperties: false
+    BootstrapContext:
+      type: object
+      properties:
+        current_decisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemoryOutput'
+        active_constraints:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemoryOutput'
+        open_questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemoryOutput'
+        scope_membership:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScopeRef'
+        recent_activity:
+          type: string
+      required:
+      - current_decisions
+      - active_constraints
+      - open_questions
+      - scope_membership
+      - recent_activity
+      additionalProperties: false
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: rl_ API key
