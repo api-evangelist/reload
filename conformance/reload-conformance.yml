@@ -1,0 +1,36 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/reload-openapi-original.json, https://docs.reload.chat/developers/api-overview
+standards:
+- id: openapi-3.1
+  conforms: true
+  evidence: openapi 3.1.0 document at docs.reload.chat/api-reference/openapi.json
+- id: http-bearer-auth
+  conforms: true
+  evidence: components.securitySchemes.bearerAuth type http scheme bearer (rl_ API key)
+- id: oauth2
+  conforms: false
+  evidence: no oauth2 security scheme; auth is API-key bearer
+- id: oidc
+  conforms: false
+- id: mcp
+  conforms: true
+  evidence: hosted MCP server at https://mcp.reload.chat/mcp exposing 34 tools (streamable HTTP)
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: uses a custom { success, error } envelope, not application/problem+json
+- id: cursor-pagination
+  conforms: true
+  evidence: get-messages uses before/after cursor pagination
+- id: optimistic-concurrency
+  conforms: true
+  evidence: expected_version / version fields with 409 VERSION_CONFLICT on mismatch
+- id: rfc8594-sunset
+  conforms: false
+  evidence: no Sunset/Deprecation header support documented
+compliance_programs: []
+compliance_note: >-
+  No published third-party certification program (SOC 2 / ISO 27001 / PCI / HIPAA /
+  FedRAMP) was found for this early-stage (pre-seed) provider, so no Compliance
+  pointer is emitted. Workspace-level security controls (password, MFA, linked SSO,
+  session management) are documented at docs.reload.chat/settings/security-and-sessions.

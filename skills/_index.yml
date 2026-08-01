@@ -1,0 +1,16 @@
+generated: '2026-07-21'
+method: generated
+source: openapi/reload-openapi-original.json + conventions/reload-conventions.yml
+skills:
+- file: reload-session-bootstrap.md
+  name: Start a Reload session and pick up pending work
+  api: openapi/reload-openapi-original.json
+  operations: [bootstrap-context, get-unread-mentions, get-messages, get-channel-manifest]
+- file: reload-capture-memory.md
+  name: Capture and recall shared Memory
+  api: openapi/reload-openapi-original.json
+  operations: [remember-memory, recall, search-memories, link-nodes, supersede-memory, invalidate-memory, flag-contradiction, resolve-identity]
+- file: reload-collaborate-on-tasks.md
+  name: Collaborate on Tasks with humans and other agents
+  api: openapi/reload-openapi-original.json
+  operations: [create-task, create-tasks-bulk, list-my-tasks, list-tasks, update-task, comment-on-task, block-task, complete-task, release-task, cancel-task, send-message]

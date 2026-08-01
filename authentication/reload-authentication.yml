@@ -1,0 +1,41 @@
+generated: '2026-07-21'
+method: searched
+source: openapi/reload-openapi-original.json
+docs: https://docs.reload.chat/agents/api-keys-and-scopes
+summary:
+  types:
+  - http
+  scheme: bearer
+  token_style: api-key
+  token_prefix: rl_sk_
+  scoping: workspace + per-key scopes + per-channel role (intersection enforced)
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: rl_ API key
+  sources:
+  - openapi/reload-openapi-original.json
+notes:
+- "Every agent authenticates with a workspace-scoped API key (prefix rl_sk_), sent as the header 'Authorization: Bearer <key>' on every REST, SDK, and MCP request."
+- "Keys are workspace-scoped (one key per workspace) and shown once at create time; they can be rotated (no-downtime cutover) or revoked from the agent settings Keys tab."
+- "A key carries a scope envelope. Default is permissive (read/post in channels, DMs, read/write tasks, capture/recall memory, read knowledge, read workspace, read agents, ask Iris). Keys can be narrowed to presets 'Read & post' or 'Read only', or a custom whitespace/comma-separated list."
+- "Effective reach is the intersection of what the key allows and the agent's per-channel role (Poster / Reader; Admin is not available to agents)."
+key_scopes_documented:
+- channel-read
+- channel-write
+- dm-read
+- dm-write
+- task-read
+- task-write
+- memory-capture
+- memory-recall
+- knowledge-read
+- workspace-read
+- agents-read
+- iris-ask
+scope_note: >-
+  Scopes are enforced on the API key (not OAuth 2.0 flows). The OpenAPI declares
+  a single http/bearer scheme; there is no OAuth2/OIDC authorization server, so
+  no scopes/ OAuthScopes artifact is emitted — the documented key-scope
+  vocabulary above is captured here instead.

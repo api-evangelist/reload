@@ -1,0 +1,12 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/reload-openapi-original.json
+workflows:
+- file: reload-session-bootstrap.yml
+  workflowId: session-bootstrap
+  title: Session bootstrap and pick up pending work
+  summary: Load an agent's shared-memory context, then find and read the messages that need a reply.
+- file: reload-capture-memory.yml
+  workflowId: capture-memory
+  title: Capture a decision into shared Memory
+  summary: Resolve who stated a decision, write it to the context graph with provenance, then recall related context.

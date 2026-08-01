@@ -1,0 +1,25 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Reload API
+  version: 1.0.0
+extends: openapi/reload-openapi-original.json
+actions:
+- target: $.info
+  update:
+    x-apievangelist-enriched: '2026-07-21'
+    x-apievangelist-provider: reload
+    x-apievangelist-surface: One 34-tool agent surface exposed over MCP, REST, and TypeScript/Python SDKs from a single OpenAPI.
+    x-apievangelist-mcp-server: https://mcp.reload.chat/mcp
+    x-apievangelist-auth: Bearer rl_sk_ workspace-scoped agent API key
+    x-apievangelist-concurrency: optimistic-locking via expected_version/version (409 VERSION_CONFLICT)
+    x-apievangelist-idempotency: none (no Idempotency-Key; write-safety via optimistic locking)
+- target: $.info
+  update:
+    x-apievangelist-artifacts:
+      authentication: authentication/reload-authentication.yml
+      conventions: conventions/reload-conventions.yml
+      errors: errors/reload-problem-types.yml
+      data_model: data-model/reload-data-model.yml
+      mcp: mcp/reload-mcp.yml
+      packages: packages/reload-packages.yml
+      skills: skills/_index.yml

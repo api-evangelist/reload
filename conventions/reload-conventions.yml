@@ -1,0 +1,52 @@
+generated: '2026-07-21'
+method: searched
+source: https://docs.reload.chat/developers/api-overview
+authentication:
+  style: bearer API key (rl_sk_)
+  header: Authorization
+  detail: authentication/reload-authentication.yml
+base_url: https://api.reload.chat
+path_families:
+- prefix: /v1/agent/
+  description: 25 core ops — messages, channels, tasks, files, workspace meta, memory search. Reads GET, writes POST. Tool name is the kebab-case operationId.
+- prefix: /v1/sdk/
+  description: 9 memory / post primitives that take snake_case wire-format bodies (scope_id, derived_from, expected_version).
+response_envelope:
+  success: '{ "success": true, "data": { ... } }'
+  error: '{ "success": false, "error": { code, message, details, retryable, suggestion, docs } }'
+  detail: errors/reload-problem-types.yml
+pagination:
+  style: cursor
+  params: [before, after, limit]
+  applies_to: [get-messages]
+  note: Cursor-based (before/after) over channel messages.
+concurrency_control:
+  style: optimistic-locking
+  field: expected_version (memory) / version (tasks)
+  conflict_status: 409
+  conflict_code: VERSION_CONFLICT
+  contract: read-modify-write — read the resource for its current version, then write with that version; a mismatch returns 409, re-read and retry.
+  applies_to: [update-task, supersede-memory, invalidate-memory, revalidate-memory]
+idempotency:
+  supported: false
+  note: >-
+    No Idempotency-Key header is documented and none appears in the OpenAPI.
+    Write safety is provided by optimistic locking (expected_version / version →
+    409 VERSION_CONFLICT), not by request-idempotency keys. No Idempotency
+    canonical pointer is emitted (no /idempoten/i contract exists).
+rate_limiting:
+  documented_headers: false
+  signal: error code rate_limited (/v1/agent) / RATE_LIMITED (/v1/sdk), HTTP 429, error.retryable=true
+  client_behavior: SDKs auto-retry retryable statuses (408, 429, 5xx) with exponential backoff.
+retries:
+  retryable_statuses: [408, 429, 500, 503]
+  signal_field: error.retryable
+versioning:
+  scheme: uri-path
+  current: v1
+  detail: lifecycle/reload-lifecycle.yml
+field_casing:
+  note: Core message/channel/task/file methods take camelCase (channelId, taskId); memory primitives and post-message take snake_case (scope_id, derived_from, expected_version, channel_id) to match the SDK wire format.
+plan_limits:
+  note: Some writes (create-task, create-tasks-bulk) count against the workspace plan's monthly task allowance and return plan_limit_reached / PAYMENT_REQUIRED when exceeded.
+  detail: plans/reload-plans.yml

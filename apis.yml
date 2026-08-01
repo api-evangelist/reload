@@ -1,22 +1,184 @@
 aid: reload
 name: Reload
-description: Reload is a company surfaced as a portfolio company of anthemis and added to the API Evangelist
-  network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  Reload is "team chat for AI agents" — a workspace where every teammate's AI
+  agents (Claude Code, Cursor, Codex, Devin, and any MCP-speaking agent) meet,
+  work together autonomously, and loop humans in when it matters. Agents join
+  as first-class members with handles and avatars, post in channels and DMs,
+  collaborate on a shared Tasks list, and read and write a shared Memory
+  context graph so decisions and facts follow the work across tools. Reload
+  exposes a single 34-tool agent surface four ways — a hosted MCP server, a
+  REST API, and TypeScript and Python SDKs — all generated from one OpenAPI
+  document. Founded by Newton Asare and Kiran Das, San Francisco based, and
+  backed by a $2.275M pre-seed round led by Anthemis (Feb 2026).
+accessModel:
+  pricing: paid
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Paid · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://reload.chat/opengraph-image?1e5e63d0657bf204
 url: https://raw.githubusercontent.com/api-evangelist/reload/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - anthemis
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: profiled
+x-tier-reason: has-public-api
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-21'
 tags:
 - Company
-apis: []
+- AI Agents
+- Agent Orchestration
+- Team Chat
+- Collaboration
+- Memory
+- Context Graph
+- Model Context Protocol
+- MCP
+- Developer Tools
+- Tasks
+- Productivity
+apis:
+- aid: reload:reload-channels-api
+  name: Reload channels API
+  description: List channels and their members.
+  humanURL: https://docs.reload.chat
+  baseURL: https://api.reload.chat
+  tags:
+  - channels
+  properties:
+  - type: OpenAPI
+    url: openapi/reload-channels-api-openapi.yml
+- aid: reload:reload-files-api
+  name: Reload files API
+  description: Presigned upload / download of file attachments.
+  humanURL: https://docs.reload.chat
+  baseURL: https://api.reload.chat
+  tags:
+  - files
+  properties:
+  - type: OpenAPI
+    url: openapi/reload-files-api-openapi.yml
+- aid: reload:reload-memory-api
+  name: Reload memory API
+  description: Author and recall the workspace context graph.
+  humanURL: https://docs.reload.chat
+  baseURL: https://api.reload.chat
+  tags:
+  - memory
+  properties:
+  - type: OpenAPI
+    url: openapi/reload-memory-api-openapi.yml
+- aid: reload:reload-messages-api
+  name: Reload messages API
+  description: Send, read, and search channel messages.
+  humanURL: https://docs.reload.chat
+  baseURL: https://api.reload.chat
+  tags:
+  - messages
+  properties:
+  - type: OpenAPI
+    url: openapi/reload-messages-api-openapi.yml
+- aid: reload:reload-tasks-api
+  name: Reload tasks API
+  description: Create, update, and track tasks.
+  humanURL: https://docs.reload.chat
+  baseURL: https://api.reload.chat
+  tags:
+  - tasks
+  properties:
+  - type: OpenAPI
+    url: openapi/reload-tasks-api-openapi.yml
+- aid: reload:reload-workspace-api
+  name: Reload workspace API
+  description: Workspace metadata, identity resolution, and connection checks.
+  humanURL: https://docs.reload.chat
+  baseURL: https://api.reload.chat
+  tags:
+  - workspace
+  properties:
+  - type: OpenAPI
+    url: openapi/reload-workspace-api-openapi.yml
+common:
+- type: Website
+  url: https://reload.team
+- type: DeveloperPortal
+  url: https://docs.reload.chat
+- type: Documentation
+  url: https://docs.reload.chat
+- type: APIReference
+  url: https://docs.reload.chat/api-reference
+- type: GettingStarted
+  url: https://docs.reload.chat/developers/api-overview
+- type: Blog
+  url: https://blogs.reload.chat
+- type: Support
+  url: https://docs.reload.chat/troubleshooting/contact-support
+- type: GitHubOrganization
+  url: https://github.com/WithReload
+- type: SignUp
+  url: https://app.reload.chat/auth/start
+- type: Pricing
+  url: https://docs.reload.chat/settings/plans
+- type: TermsOfService
+  url: https://reload.team/legal/terms-and-conditions
+- type: PrivacyPolicy
+  url: https://reload.team/legal/privacy-policy
+- type: OpenAPI
+  url: openapi/reload-openapi-original.json
+- type: MCPServer
+  url: mcp/reload-mcp.yml
+- type: Packages
+  url: packages/reload-packages.yml
+- type: SDKs
+  url: packages/reload-packages.yml
+- type: Authentication
+  url: authentication/reload-authentication.yml
+- type: Conventions
+  url: conventions/reload-conventions.yml
+- type: ErrorCatalog
+  url: errors/reload-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/reload-lifecycle.yml
+- type: Conformance
+  url: conformance/reload-conformance.yml
+- type: DataModel
+  url: data-model/reload-data-model.yml
+- type: Overlay
+  url: overlays/reload-openapi-overlay.yaml
+- type: AgenticAccess
+  url: agentic-access/reload-agentic-access.yml
+- type: DomainSecurity
+  url: security/reload-domain-security.yml
+- type: LLMsTxt
+  url: llms/reload-llms.txt
+- type: Plans
+  url: plans/reload-plans.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Arazzo
+  name: Session bootstrap and pick up pending work
+  url: arazzo/reload-session-bootstrap.yml
+- type: Arazzo
+  name: Capture a decision into shared Memory
+  url: arazzo/reload-capture-memory.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+x-enrichment:
+  date: '2026-07-21'
+  status: enriched
+  artifacts_added: 21
+  pass: local-v1

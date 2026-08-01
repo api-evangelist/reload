@@ -1,0 +1,62 @@
+arazzo: 1.0.1
+info:
+  title: Reload — capture a decision into shared Memory
+  version: 1.0.0
+  summary: Resolve who stated a decision, write it to the context graph with provenance, then recall related context.
+sourceDescriptions:
+- name: reload
+  url: ../openapi/reload-openapi-original.json
+  type: openapi
+workflows:
+- workflowId: capture-memory
+  summary: Author a provenance-backed Memory and recall its neighborhood.
+  description: resolve-identity to get the stated_by id, remember-memory with a derived_from pointer, then recall the surrounding subgraph.
+  inputs:
+    type: object
+    properties:
+      handle:
+        type: string
+        description: "@handle or email of the person who stated the decision."
+      scope_id:
+        type: string
+        description: The memory scope (channel-bounded ACL) to write into.
+      content:
+        type: string
+        description: The decision or fact to remember.
+      derived_from_message_id:
+        type: string
+        description: A message id this memory is derived from (provenance).
+      query:
+        type: string
+        description: Semantic query to recall related context afterward.
+  steps:
+  - stepId: who
+    description: Resolve the identity id of the person who stated the decision.
+    operationId: resolve-identity
+    parameters:
+    - name: handle
+      in: query
+      value: $inputs.handle
+  - stepId: remember
+    description: Write the decision into the context graph with provenance.
+    operationId: remember-memory
+    requestBody:
+      contentType: application/json
+      payload:
+        kind: decision
+        content: $inputs.content
+        scope_id: $inputs.scope_id
+        stated_by_identity_id: $steps.who.outputs.id
+        derived_from:
+        - kind: message
+          id: $inputs.derived_from_message_id
+  - stepId: recall
+    description: Pull the ranked subgraph of related context.
+    operationId: recall
+    requestBody:
+      contentType: application/json
+      payload:
+        query: $inputs.query
+  outputs:
+    memory: $steps.remember.outputs
+    related: $steps.recall.outputs

@@ -1,0 +1,57 @@
+generated: '2026-07-21'
+method: searched
+source: https://docs.reload.chat/settings/plans
+currency: USD
+billing: [monthly, annual]
+checkout: Stripe Checkout (coupon codes supported)
+plan_count: 5
+plans:
+- name: Starter
+  monthly: 0
+  annual: 0
+  seats: 1
+  agents: 3
+  channels: 2
+  history: last 7 days
+- name: Individual
+  monthly: 7
+  annual: 60
+  annual_effective_monthly: 5
+  seats: 1
+  agents: 10
+  channels: 20
+  history: last 90 days
+- name: Pro
+  popular: true
+  monthly: 29
+  annual: 228
+  annual_effective_monthly: 19
+  seats: 20
+  agents: 50
+  channels: unlimited
+  history: unlimited
+- name: Growth
+  monthly: 59
+  annual: 588
+  annual_effective_monthly: 49
+  seats: 100
+  agents: 500
+  channels: unlimited
+  history: unlimited
+- name: Custom
+  monthly: null
+  annual: null
+  seats: custom
+  agents: custom
+  channels: custom
+  history: custom
+  note: Contact sales (sales@reload.chat) — bespoke contract, custom SLAs, invoicing.
+included_all_plans:
+- Full desktop app
+- Iris built-in workspace assistant
+- Channels, DMs, threads, mentions
+- Full Tasks page
+- Memory (history window scoped per plan)
+- Agent integration via MCP
+- Workspace security controls (password, MFA, linked accounts, sessions)
+notes: Messages are not capped per cycle on any plan; plans differentiate on seats, agents, channels, and history window.

@@ -1,0 +1,19 @@
+generated: '2026-07-21'
+method: searched
+source: https://docs.reload.chat/developers/api-overview
+versioning:
+  scheme: uri-path
+  current: v1
+  detail: All routes are served under /v1/ (/v1/agent/*, /v1/sdk/*).
+deprecation:
+  policy_url: null
+  sunset_header: false
+  note: No public deprecation policy or RFC 8594 Sunset/Deprecation header support documented as of this pass; no operation is marked deprecated in the OpenAPI.
+sla:
+  url: null
+  note: No published SLA. Custom plans state "custom SLAs" are available by contract (contact sales).
+status_page: null
+status_page_note: No public status page found (status.reload.chat / status.reload.team do not resolve). Realtime connection health is surfaced in-app via a connection-status pill (reconnecting / offline / degraded).
+deprecated_operations: []
+history_windows:
+  note: Message/memory read history is plan-scoped (Starter 7d, Individual 90d, Pro/Growth unlimited) — a data-retention window, not an API-version lifecycle. See plans/reload-plans.yml.

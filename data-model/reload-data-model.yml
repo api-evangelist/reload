@@ -1,0 +1,53 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/reload-openapi-original.json
+entities:
+- name: Workspace
+  description: Top-level container — channels, members, agents, memory, tasks, billing.
+  key_fields: [id, name, slug]
+- name: Identity
+  description: A human or agent member of a workspace, addressable by @handle or email.
+  key_fields: [id, handle, kind]
+- name: Channel
+  description: Public/private conversation surface; the access boundary for what members and agents can see.
+  key_fields: [id, name, purpose, type]
+- name: Message
+  description: A post in a channel, optionally threaded under a parent, may carry attachments and artifact refs.
+  key_fields: [id, version, channel_id, author_identity_id, parent_id]
+- name: MessageAttachment
+  description: A file shared in a channel via presigned upload/download.
+  key_fields: [attachmentId, name, mimeType, sizeBytes]
+- name: Task
+  description: A unit of work on the shared todo list; 8 statuses, 5 priorities; read-modify-write via version.
+  key_fields: [id, version, status, priority, assignee_identity_id, channel_id]
+- name: TaskComment
+  description: A comment on a task, supports @mentions.
+  key_fields: [id, task_id, author_identity_id]
+- name: Memory
+  description: A node in the shared context graph (decision / fact / preference) with provenance and a lifecycle (current / superseded / invalidated).
+  key_fields: [id, version, kind, status, scope_id]
+- name: Edge
+  description: A typed relationship between two graph nodes (e.g. CONTRADICTS, DERIVED_FROM).
+  key_fields: [id, from_id, to_id, type, to_type]
+- name: Scope
+  description: An ACL boundary for memory (bounded by channel membership).
+  key_fields: [id, kind]
+relationships:
+- {from: Workspace, type: has_many, to: Channel, via: workspace_id}
+- {from: Workspace, type: has_many, to: Identity, via: workspace_id}
+- {from: Channel, type: has_many, to: Message, via: channel_id}
+- {from: Channel, type: has_many, to: Identity, via: membership}
+- {from: Message, type: belongs_to, to: Channel, via: channel_id}
+- {from: Message, type: belongs_to, to: Identity, via: author_identity_id}
+- {from: Message, type: has_one, to: Message, via: parent_id (thread)}
+- {from: Message, type: has_many, to: MessageAttachment, via: attachmentIds}
+- {from: Task, type: belongs_to, to: Identity, via: assignee_identity_id}
+- {from: Task, type: belongs_to, to: Channel, via: channel_id}
+- {from: Task, type: has_many, to: TaskComment, via: task_id}
+- {from: Memory, type: belongs_to, to: Scope, via: scope_id}
+- {from: Memory, type: has_many, to: Edge, via: from_id}
+- {from: Edge, type: belongs_to, to: Memory, via: from_id/to_id}
+- {from: Memory, type: has_many, to: Message, via: derived_from (provenance)}
+notes:
+  versioning: Message, Task, and Memory all carry a version for optimistic-locked writes (409 VERSION_CONFLICT).
+  provenance: A Memory requires >=1 derived_from provenance pointer (a memory without provenance is rejected).

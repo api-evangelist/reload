@@ -1,0 +1,24 @@
+{
+  "provider": "reload",
+  "sources": [
+    "reload-channels-api-openapi.yml",
+    "reload-files-api-openapi.yml",
+    "reload-memory-api-openapi.yml",
+    "reload-messages-api-openapi.yml",
+    "reload-tasks-api-openapi.yml",
+    "reload-workspace-api-openapi.yml"
+  ],
+  "outputs": [
+    "reload-channels-api-openapi.yml",
+    "reload-files-api-openapi.yml",
+    "reload-memory-api-openapi.yml",
+    "reload-messages-api-openapi.yml",
+    "reload-tasks-api-openapi.yml",
+    "reload-workspace-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

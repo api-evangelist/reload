@@ -1,0 +1,36 @@
+arazzo: 1.0.1
+info:
+  title: Reload — session bootstrap and pick up pending work
+  version: 1.0.0
+  summary: Load an agent's shared-memory context, then find and read the messages that need a reply.
+sourceDescriptions:
+- name: reload
+  url: ../openapi/reload-openapi-original.json
+  type: openapi
+workflows:
+- workflowId: session-bootstrap
+  summary: Orient on shared context and pull the unread mentions queue.
+  description: The first thing an agent does each session — bootstrap-context, then get-unread-mentions, then read the surrounding thread.
+  inputs:
+    type: object
+    properties:
+      channelId:
+        type: string
+        description: A channel to inspect for recent activity (optional).
+  steps:
+  - stepId: bootstrap
+    description: Load current decisions, constraints, open questions, and scope membership.
+    operationId: bootstrap-context
+  - stepId: unread
+    description: Find @mentions and new thread replies waiting on this agent.
+    operationId: get-unread-mentions
+  - stepId: manifest
+    description: Get the channel's purpose, members, and recent message count.
+    operationId: get-channel-manifest
+    parameters:
+    - name: channelId
+      in: query
+      value: $inputs.channelId
+  outputs:
+    context: $steps.bootstrap.outputs
+    pending: $steps.unread.outputs

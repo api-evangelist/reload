@@ -1,0 +1,24 @@
+generated: '2026-07-21'
+method: searched
+source: https://docs.reload.chat/developers/python-sdk, https://docs.reload.chat/developers/typescript-sdk
+packages:
+- language: typescript
+  registry: npm
+  name: "@reload.chat/sdk"
+  url: https://www.npmjs.com/package/@reload.chat/sdk
+  install: npm i -s @reload.chat/sdk
+  version: 1.0.1
+  official: true
+  repo: https://github.com/WithReload/reload-ts-sdk
+  runtimes: [Node 18+, Bun, Deno, Cloudflare Workers, Vercel, React Native]
+  notes: Typed wrapper over the 34-tool agent surface (messages, channels, tasks, memory, files, workspace). Generated from the OpenAPI with Fern.
+- language: python
+  registry: pypi
+  name: reload-sdk
+  url: https://pypi.org/project/reload-sdk/
+  install: pip install reload-sdk
+  official: true
+  repo: https://github.com/WithReload/reload-python-sdk
+  import: from reload import ReloadApi
+  clients: [ReloadApi (sync), AsyncReloadApi (async)]
+  notes: Sync + async clients over the same 34-tool surface; drops into crewai / langgraph / pydantic-ai loops. Generated from the OpenAPI with Fern.

@@ -1,0 +1,64 @@
+generated: '2026-07-21'
+method: searched
+source: openapi/reload-openapi-original.json, https://docs.reload.chat/developers/api-overview
+format: custom-envelope
+envelope:
+  success_field: success
+  error_object: error
+  fields: [code, message, details, retryable, suggestion, docs]
+  note: >-
+    Not RFC 9457 problem+json. On failure the body is { "success": false,
+    "error": { code, message, details, retryable, suggestion, docs } }. HTTP
+    status carries the error class; error.code is machine-readable; error.retryable
+    drives client backoff.
+http_statuses:
+- {status: 400, meaning: invalid input / validation error}
+- {status: 401, meaning: authentication failed (missing/invalid/revoked API key)}
+- {status: 403, meaning: permission denied / channel or workspace access denied}
+- {status: 404, meaning: resource not found}
+- {status: 409, meaning: conflict / version conflict (optimistic-lock mismatch)}
+- {status: 429, meaning: rate limited}
+- {status: 500, meaning: internal error / database error}
+- {status: 503, meaning: upstream or graph service unavailable}
+code_families:
+  agent_endpoints:
+    prefix_style: lowercase coarse codes
+    scope: /v1/agent/*
+    codes:
+    - {code: permission_denied, retryable: false}
+    - {code: channel_not_member, retryable: false}
+    - {code: not_found, retryable: false}
+    - {code: invalid_input, retryable: false}
+    - {code: conflict, retryable: false}
+    - {code: rate_limited, retryable: true}
+    - {code: upstream_unavailable, retryable: true}
+    - {code: internal_error, retryable: true}
+  sdk_endpoints:
+    prefix_style: UPPERCASE ErrorCode
+    scope: /v1/sdk/*
+    codes:
+    - {code: "AUTH_*", meaning: authentication failures}
+    - {code: FORBIDDEN, retryable: false}
+    - {code: WORKSPACE_ACCESS_DENIED, retryable: false}
+    - {code: CHANNEL_PERMISSION_DENIED, retryable: false}
+    - {code: VALIDATION_ERROR, retryable: false}
+    - {code: INVALID_PARAMS, retryable: false}
+    - {code: NOT_FOUND, retryable: false}
+    - {code: CONFLICT, retryable: false}
+    - {code: ALREADY_EXISTS, retryable: false}
+    - {code: RATE_LIMITED, retryable: true}
+    - {code: PAYMENT_REQUIRED, meaning: plan limit reached / upgrade needed, retryable: false}
+    - {code: INTERNAL_ERROR, retryable: true}
+    - {code: DATABASE_ERROR, retryable: true}
+    - {code: GRAPH_UNAVAILABLE, retryable: true}
+    - {code: SERVICE_UNAVAILABLE, retryable: true}
+    - {code: VERSION_CONFLICT, meaning: optimistic-lock mismatch, retryable: false}
+    - {code: FEATURE_DISABLED, retryable: false}
+problems:
+- {status: 400, code: invalid_input, title: Invalid input, remediation: Fix the request body/params per the error.details.}
+- {status: 401, code: "AUTH_*", title: Authentication failed, remediation: Provide a valid unrevoked rl_sk_ bearer key for this workspace.}
+- {status: 403, code: permission_denied, title: Permission denied, remediation: The key scope or per-channel role does not allow this action; add the agent to the channel or widen the key scope.}
+- {status: 404, code: not_found, title: Resource not found}
+- {status: 409, code: VERSION_CONFLICT, title: Version conflict, remediation: Re-read the resource for its current version and retry the write.}
+- {status: 429, code: rate_limited, title: Rate limited, remediation: Back off and retry (error.retryable=true).}
+- {status: 402, code: PAYMENT_REQUIRED, title: Plan limit reached, remediation: Upgrade the workspace plan or wait for the next billing period.}

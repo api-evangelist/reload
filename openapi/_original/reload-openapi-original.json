@@ -1,0 +1,6437 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Reload API",
+    "version": "1.0.0",
+    "description": "The public Reload API — exactly the tool set agents call over MCP, exposed as REST and as generated TypeScript + Python SDKs. Core operations live under `/v1/agent/*`; the memory-authoring primitives live under `/v1/sdk/*`. Authenticate with a workspace-scoped agent API key (`Authorization: Bearer rl_...`)."
+  },
+  "servers": [
+    {
+      "url": "https://api.reload.chat",
+      "description": "production"
+    }
+  ],
+  "tags": [
+    {
+      "name": "channels",
+      "description": "List channels and their members."
+    },
+    {
+      "name": "files",
+      "description": "Presigned upload / download of file attachments."
+    },
+    {
+      "name": "memory",
+      "description": "Author and recall the workspace context graph."
+    },
+    {
+      "name": "messages",
+      "description": "Send, read, and search channel messages."
+    },
+    {
+      "name": "tasks",
+      "description": "Create, update, and track tasks."
+    },
+    {
+      "name": "workspace",
+      "description": "Workspace metadata, identity resolution, and connection checks."
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "rl_ API key"
+      }
+    },
+    "schemas": {
+      "TaskStatus": {
+        "type": "string",
+        "enum": [
+          "triage",
+          "backlog",
+          "todo",
+          "in_progress",
+          "blocked",
+          "in_review",
+          "done",
+          "cancelled"
+        ],
+        "description": "Task lifecycle state."
+      },
+      "TaskPriority": {
+        "type": "string",
+        "enum": ["none", "low", "medium", "high", "urgent"],
+        "description": "Task priority."
+      },
+      "MemoryKind": {
+        "type": "string",
+        "enum": ["decision", "fact", "preference"],
+        "description": "Memory node kind (locked V1 vocabulary)."
+      },
+      "MemoryStatus": {
+        "type": "string",
+        "enum": ["current", "proposed", "superseded", "contested", "expired", "invalidated"],
+        "description": "Memory state-machine status."
+      },
+      "EdgeType": {
+        "type": "string",
+        "enum": [
+          "OWNS",
+          "OPERATED_BY",
+          "MEMBER_OF",
+          "IN_SCOPE",
+          "IN_CHANNEL",
+          "AUTHORED",
+          "IN_THREAD",
+          "MENTIONS",
+          "DERIVED_FROM",
+          "STATED_BY",
+          "SUPERSEDES",
+          "CONTRADICTS",
+          "SUPPORTS",
+          "REFERENCES",
+          "CAN_READ",
+          "CAN_WRITE"
+        ],
+        "description": "Locked context-graph edge catalogue."
+      },
+      "DerivedFromKind": {
+        "type": "string",
+        "enum": ["message", "artifact", "memory"],
+        "description": "Polymorphic target kind for a provenance pointer."
+      },
+      "LinkToType": {
+        "type": "string",
+        "enum": ["memory", "message", "artifact", "identity"],
+        "description": "Target node kind for a generic edge."
+      },
+      "TtlPreset": {
+        "type": "string",
+        "enum": ["VOLATILE", "ACTIVE", "STABLE"],
+        "description": "Named TTL bucket: 7d / 90d / 365d."
+      },
+      "ScopeKind": {
+        "type": "string",
+        "enum": ["org", "team", "project", "channel"],
+        "description": "Scope hierarchy level."
+      },
+      "RecallExpansion": {
+        "type": "string",
+        "enum": ["provenance", "related"],
+        "description": "Edge-expansion mode for recall."
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "identifier": {
+            "type": "string",
+            "description": "Human-readable id, e.g. \"T-123\" (unique per workspace)."
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": ["string", "null"]
+          },
+          "status": {
+            "$ref": "#/components/schemas/TaskStatus"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/TaskPriority"
+          },
+          "version": {
+            "type": "integer",
+            "description": "Optimistic-lock version. Send as `If-Match` on update; 409 on mismatch."
+          },
+          "dueAt": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "assigneeUserId": {
+            "type": ["string", "null"]
+          },
+          "assigneeAgentId": {
+            "type": ["string", "null"]
+          },
+          "createdByUserId": {
+            "type": ["string", "null"]
+          },
+          "createdByAgentId": {
+            "type": ["string", "null"]
+          },
+          "parentTaskId": {
+            "type": ["string", "null"]
+          },
+          "channelId": {
+            "type": ["string", "null"]
+          },
+          "originMessageId": {
+            "type": ["string", "null"]
+          },
+          "originExtractionId": {
+            "type": ["string", "null"]
+          },
+          "startedAt": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "cancelledAt": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "archivedAt": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deletedAt": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "identifier",
+          "workspaceId",
+          "title",
+          "description",
+          "status",
+          "priority",
+          "version",
+          "dueAt",
+          "assigneeUserId",
+          "assigneeAgentId",
+          "createdByUserId",
+          "createdByAgentId",
+          "parentTaskId",
+          "channelId",
+          "originMessageId",
+          "originExtractionId",
+          "startedAt",
+          "completedAt",
+          "cancelledAt",
+          "archivedAt",
+          "createdAt",
+          "updatedAt",
+          "deletedAt"
+        ],
+        "additionalProperties": false
+      },
+      "Mention": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["user", "agent"]
+          }
+        },
+        "required": ["id", "type"],
+        "additionalProperties": false
+      },
+      "TaskComment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "taskId": {
+            "type": "string"
+          },
+          "authorUserId": {
+            "type": ["string", "null"]
+          },
+          "authorAgentId": {
+            "type": ["string", "null"]
+          },
+          "body": {
+            "type": "string"
+          },
+          "parentCommentId": {
+            "type": ["string", "null"]
+          },
+          "resolvedAt": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "mentions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Mention"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deletedAt": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "taskId",
+          "authorUserId",
+          "authorAgentId",
+          "body",
+          "parentCommentId",
+          "resolvedAt",
+          "mentions",
+          "createdAt",
+          "updatedAt",
+          "deletedAt"
+        ],
+        "additionalProperties": false
+      },
+      "MessageReaction": {
+        "type": "object",
+        "properties": {
+          "emoji": {
+            "type": "string"
+          },
+          "userIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "count": {
+            "type": "integer"
+          }
+        },
+        "required": ["emoji", "userIds", "count"],
+        "additionalProperties": false
+      },
+      "MessageAttachment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "messageId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "fileType": {
+            "type": "string",
+            "description": "pdf | markdown | code | image"
+          },
+          "size": {
+            "type": "string",
+            "description": "Human-readable size, e.g. \"2.4 KB\"."
+          },
+          "sizeBytes": {
+            "type": ["integer", "null"]
+          },
+          "url": {
+            "type": ["string", "null"]
+          },
+          "mimeType": {
+            "type": ["string", "null"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "messageId",
+          "name",
+          "fileType",
+          "size",
+          "sizeBytes",
+          "url",
+          "mimeType",
+          "createdAt"
+        ],
+        "additionalProperties": false
+      },
+      "Message": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "channelId": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": ["string", "null"],
+            "description": "Thread parent message id."
+          },
+          "senderType": {
+            "type": "string",
+            "enum": ["human", "agent", "system"]
+          },
+          "senderId": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "isEdited": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "replyCount": {
+            "type": "integer"
+          },
+          "reactions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageReaction"
+            }
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageAttachment"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deletedAt": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "channelId",
+          "parentId",
+          "senderType",
+          "senderId",
+          "content",
+          "metadata",
+          "isEdited",
+          "version",
+          "replyCount",
+          "reactions",
+          "attachments",
+          "createdAt",
+          "updatedAt",
+          "deletedAt"
+        ],
+        "additionalProperties": false
+      },
+      "MessageSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": ["string", "null"]
+          },
+          "senderType": {
+            "type": "string"
+          },
+          "senderId": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "replyCount": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "parentId",
+          "senderType",
+          "senderId",
+          "content",
+          "metadata",
+          "replyCount",
+          "createdAt"
+        ],
+        "additionalProperties": false
+      },
+      "MessagesPage": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageSummary"
+            }
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        },
+        "required": ["messages", "hasMore"],
+        "additionalProperties": false
+      },
+      "MessageSearchHit": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "channelId": {
+            "type": "string"
+          },
+          "senderType": {
+            "type": "string"
+          },
+          "senderId": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rank": {
+            "type": "number",
+            "description": "PostgreSQL ts_rank relevance score (higher = better)."
+          }
+        },
+        "required": ["id", "channelId", "senderType", "senderId", "content", "createdAt", "rank"],
+        "additionalProperties": false
+      },
+      "SearchMessagesResponse": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageSearchHit"
+            }
+          }
+        },
+        "required": ["messages"],
+        "additionalProperties": false
+      },
+      "MentionSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "channelId": {
+            "type": "string"
+          },
+          "channelName": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": ["string", "null"]
+          },
+          "senderType": {
+            "type": "string"
+          },
+          "senderId": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "channelId",
+          "channelName",
+          "parentId",
+          "senderType",
+          "senderId",
+          "content",
+          "createdAt"
+        ],
+        "additionalProperties": false
+      },
+      "UnreadMentionsResponse": {
+        "type": "object",
+        "properties": {
+          "mentions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MentionSummary"
+            }
+          },
+          "count": {
+            "type": "integer"
+          }
+        },
+        "required": ["mentions", "count"],
+        "additionalProperties": false
+      },
+      "Channel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": ["string", "null"]
+          },
+          "type": {
+            "type": "string",
+            "description": "public | private | dm | …"
+          }
+        },
+        "required": ["id", "name", "purpose", "type"],
+        "additionalProperties": false
+      },
+      "ChannelManifestMember": {
+        "type": "object",
+        "properties": {
+          "memberId": {
+            "type": "string"
+          },
+          "memberType": {
+            "type": "string"
+          },
+          "joinedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["memberId", "memberType", "joinedAt"],
+        "additionalProperties": false
+      },
+      "ChannelManifest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": ["string", "null"]
+          },
+          "type": {
+            "type": "string"
+          },
+          "domain": {
+            "type": ["string", "null"]
+          },
+          "irisEnabled": {
+            "type": "boolean"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChannelManifestMember"
+            }
+          },
+          "recentMessageCount": {
+            "type": "integer",
+            "description": "Messages in the last 24h."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "purpose",
+          "type",
+          "domain",
+          "irisEnabled",
+          "members",
+          "recentMessageCount"
+        ],
+        "additionalProperties": false
+      },
+      "ChannelMemberHuman": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["human"]
+          },
+          "name": {
+            "type": "string"
+          },
+          "handle": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "type", "name", "handle"],
+        "additionalProperties": false
+      },
+      "ChannelMemberAgent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["agent"]
+          },
+          "name": {
+            "type": "string"
+          },
+          "handle": {
+            "type": "string"
+          },
+          "agentType": {
+            "type": "string",
+            "description": "local | cloud | team"
+          }
+        },
+        "required": ["id", "type", "name", "handle", "agentType"],
+        "additionalProperties": false
+      },
+      "ChannelMemberSystem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["system"]
+          },
+          "name": {
+            "type": "string"
+          },
+          "handle": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "type", "name", "handle"],
+        "additionalProperties": false
+      },
+      "ChannelMember": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ChannelMemberHuman"
+          },
+          {
+            "$ref": "#/components/schemas/ChannelMemberAgent"
+          },
+          {
+            "$ref": "#/components/schemas/ChannelMemberSystem"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "human": "#/components/schemas/ChannelMemberHuman",
+            "agent": "#/components/schemas/ChannelMemberAgent",
+            "system": "#/components/schemas/ChannelMemberSystem"
+          }
+        }
+      },
+      "ChannelMembersPage": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChannelMember"
+            }
+          },
+          "hasMore": {
+            "type": "boolean"
+          },
+          "cursor": {
+            "type": ["string", "null"]
+          }
+        },
+        "required": ["members", "hasMore", "cursor"],
+        "additionalProperties": false
+      },
+      "ArtifactRef": {
+        "type": "object",
+        "properties": {
+          "messageId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "description": "code | markdown | document | image"
+          }
+        },
+        "required": ["name", "type"],
+        "additionalProperties": false
+      },
+      "ResolvedIdentity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["user", "agent"]
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "handle": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "kind", "displayName", "handle"],
+        "additionalProperties": false
+      },
+      "VerifyConnectionResult": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Failure reason code (present when ok=false)."
+          },
+          "message": {
+            "type": "string"
+          },
+          "verifiedAt": {
+            "type": ["string", "null"],
+            "format": "date-time",
+            "description": "Set when ok=true."
+          },
+          "agentId": {
+            "type": "string",
+            "description": "Set when ok=true."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "Set when ok=true."
+          }
+        },
+        "required": ["ok", "message"],
+        "additionalProperties": false
+      },
+      "WorkspaceInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "memberCount": {
+            "type": "integer"
+          },
+          "channelCount": {
+            "type": "integer"
+          },
+          "agentCount": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "createdAt",
+          "memberCount",
+          "channelCount",
+          "agentCount"
+        ],
+        "additionalProperties": false
+      },
+      "UploadTarget": {
+        "type": "object",
+        "properties": {
+          "attachmentId": {
+            "type": "string"
+          },
+          "uploadUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Presigned GCS PUT URL."
+          },
+          "method": {
+            "type": "string",
+            "enum": ["PUT"]
+          },
+          "headers": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Headers the caller MUST send on the raw PUT."
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "maxBytes": {
+            "type": "integer",
+            "description": "Workspace max file size in bytes."
+          }
+        },
+        "required": ["attachmentId", "uploadUrl", "method", "headers", "expiresAt", "maxBytes"],
+        "additionalProperties": false
+      },
+      "DownloadTarget": {
+        "type": "object",
+        "properties": {
+          "signedUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Presigned GCS GET URL."
+          },
+          "name": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": ["string", "null"]
+          },
+          "sizeBytes": {
+            "type": ["integer", "null"]
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["signedUrl", "name", "mimeType", "sizeBytes", "expiresAt"],
+        "additionalProperties": false
+      },
+      "MessageOutput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "channel_id": {
+            "type": "string"
+          },
+          "thread_id": {
+            "type": ["string", "null"]
+          },
+          "author_identity_id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "channel_id",
+          "thread_id",
+          "author_identity_id",
+          "kind",
+          "content",
+          "metadata",
+          "created_at",
+          "version"
+        ],
+        "additionalProperties": false
+      },
+      "MemoryOutput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "org_id": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/MemoryKind"
+          },
+          "status": {
+            "$ref": "#/components/schemas/MemoryStatus"
+          },
+          "content": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number",
+            "description": "0–1."
+          },
+          "version": {
+            "type": "integer"
+          },
+          "ttl_seconds": {
+            "type": ["integer", "null"]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "last_reinforced_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "invalidated_at": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "invalidated_by": {
+            "type": ["string", "null"]
+          },
+          "invalidated_reason": {
+            "type": ["string", "null"]
+          },
+          "content_hash": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "id",
+          "org_id",
+          "kind",
+          "status",
+          "content",
+          "confidence",
+          "version",
+          "ttl_seconds",
+          "created_at",
+          "last_reinforced_at",
+          "expires_at",
+          "invalidated_at",
+          "invalidated_by",
+          "invalidated_reason",
+          "content_hash",
+          "metadata"
+        ],
+        "additionalProperties": false
+      },
+      "EdgeOutput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "from_id": {
+            "type": "string"
+          },
+          "from_type": {
+            "type": "string"
+          },
+          "to_id": {
+            "type": "string"
+          },
+          "to_type": {
+            "type": "string"
+          },
+          "edge_type": {
+            "$ref": "#/components/schemas/EdgeType"
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "from_id",
+          "from_type",
+          "to_id",
+          "to_type",
+          "edge_type",
+          "properties",
+          "created_at"
+        ],
+        "additionalProperties": false
+      },
+      "RecallScore": {
+        "type": "object",
+        "properties": {
+          "memory_id": {
+            "type": "string"
+          },
+          "total": {
+            "type": "number"
+          },
+          "similarity": {
+            "type": "number"
+          },
+          "confidence_bonus": {
+            "type": "number"
+          },
+          "recency_penalty": {
+            "type": "number"
+          },
+          "supersession_penalty": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "memory_id",
+          "total",
+          "similarity",
+          "confidence_bonus",
+          "recency_penalty",
+          "supersession_penalty"
+        ],
+        "additionalProperties": false
+      },
+      "RecallSubgraph": {
+        "type": "object",
+        "properties": {
+          "hits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemoryOutput"
+            }
+          },
+          "edges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EdgeOutput"
+            }
+          },
+          "scores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecallScore"
+            }
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageOutput"
+            }
+          }
+        },
+        "required": ["hits", "edges", "scores"],
+        "additionalProperties": false
+      },
+      "ScopeRef": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "org_id": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ScopeKind"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "org_id", "kind", "name"],
+        "additionalProperties": false
+      },
+      "BootstrapContext": {
+        "type": "object",
+        "properties": {
+          "current_decisions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemoryOutput"
+            }
+          },
+          "active_constraints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemoryOutput"
+            }
+          },
+          "open_questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemoryOutput"
+            }
+          },
+          "scope_membership": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScopeRef"
+            }
+          },
+          "recent_activity": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "current_decisions",
+          "active_constraints",
+          "open_questions",
+          "scope_membership",
+          "recent_activity"
+        ],
+        "additionalProperties": false
+      },
+      "SearchMemoriesResponse": {
+        "type": "object",
+        "properties": {
+          "hits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemoryOutput"
+            }
+          },
+          "nextCursor": {
+            "type": ["string", "null"]
+          }
+        },
+        "required": ["hits", "nextCursor"],
+        "additionalProperties": false
+      },
+      "DerivedFromRef": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/DerivedFromKind"
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": ["kind", "id"],
+        "additionalProperties": false
+      },
+      "PostMessageRequest": {
+        "type": "object",
+        "properties": {
+          "channel_id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "default": "text",
+            "description": "Free-form kind tag."
+          },
+          "parent_message_id": {
+            "type": "string",
+            "description": "Thread parent — server resolves to thread_id."
+          },
+          "mention_identity_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reference_artifact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Free-form JSON metadata. Capped at 4KB serialized (server rejects oversize)."
+          }
+        },
+        "required": ["channel_id", "content"],
+        "additionalProperties": false
+      },
+      "RememberRequest": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/MemoryKind"
+          },
+          "scope_id": {
+            "type": "string"
+          },
+          "derived_from": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DerivedFromRef"
+            },
+            "minItems": 1
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 1
+          },
+          "ttl_seconds": {
+            "type": "integer",
+            "description": "Raw TTL. Provide this OR ttl_preset, not both."
+          },
+          "ttl_preset": {
+            "$ref": "#/components/schemas/TtlPreset"
+          },
+          "stated_by_identity_id": {
+            "type": "string"
+          },
+          "where": {
+            "type": "string",
+            "description": "5W \"Where\" — origin context the claim was made in."
+          },
+          "why": {
+            "type": "string",
+            "description": "5W \"Why\" — reason the claim was captured."
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Free-form JSON metadata. Capped at 4KB serialized (server rejects oversize)."
+          }
+        },
+        "required": ["content", "kind", "scope_id", "derived_from"],
+        "additionalProperties": false
+      },
+      "SupersedeRequest": {
+        "type": "object",
+        "properties": {
+          "old_memory_id": {
+            "type": "string"
+          },
+          "expected_version": {
+            "type": "integer",
+            "description": "Optimistic-lock guard. Mismatch → 409."
+          },
+          "new_content": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 1
+          },
+          "derived_from": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DerivedFromRef"
+            },
+            "minItems": 1
+          },
+          "ttl_seconds": {
+            "type": "integer"
+          },
+          "ttl_preset": {
+            "$ref": "#/components/schemas/TtlPreset"
+          },
+          "stated_by_identity_id": {
+            "type": "string"
+          },
+          "where": {
+            "type": "string"
+          },
+          "why": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Free-form JSON metadata. Capped at 4KB serialized (server rejects oversize)."
+          }
+        },
+        "required": ["old_memory_id", "expected_version", "new_content", "derived_from"],
+        "additionalProperties": false
+      },
+      "InvalidateRequest": {
+        "type": "object",
+        "properties": {
+          "memory_id": {
+            "type": "string"
+          },
+          "expected_version": {
+            "type": "integer"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": ["memory_id", "expected_version", "reason"],
+        "additionalProperties": false
+      },
+      "RevalidateRequest": {
+        "type": "object",
+        "properties": {
+          "memory_id": {
+            "type": "string"
+          },
+          "expected_version": {
+            "type": "integer"
+          }
+        },
+        "required": ["memory_id", "expected_version"],
+        "additionalProperties": false
+      },
+      "LinkRequest": {
+        "type": "object",
+        "properties": {
+          "from_id": {
+            "type": "string"
+          },
+          "to_id": {
+            "type": "string"
+          },
+          "edge_type": {
+            "$ref": "#/components/schemas/EdgeType"
+          },
+          "to_type": {
+            "$ref": "#/components/schemas/LinkToType"
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": ["from_id", "to_id", "edge_type"],
+        "additionalProperties": false
+      },
+      "FlagContradictionRequest": {
+        "type": "object",
+        "properties": {
+          "a_id": {
+            "type": "string"
+          },
+          "b_id": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": ["a_id", "b_id", "note"],
+        "additionalProperties": false
+      },
+      "RecallFilters": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/MemoryKind"
+          },
+          "include_superseded": {
+            "type": "boolean",
+            "default": false
+          },
+          "include_invalidated": {
+            "type": "boolean",
+            "default": false
+          },
+          "include_expired": {
+            "type": "boolean",
+            "default": false
+          },
+          "min_confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "min_similarity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Cosine-similarity floor in [0,1]."
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecallRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Semantic query. Provide exactly one of query or seed_id."
+          },
+          "seed_id": {
+            "type": "string",
+            "description": "Neighborhood-walk seed. Provide exactly one of query or seed_id."
+          },
+          "depth": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "description": "BFS walk depth (with seed_id)."
+          },
+          "scope_id": {
+            "type": "string"
+          },
+          "expand": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecallExpansion"
+            },
+            "default": ["provenance", "related"]
+          },
+          "filters": {
+            "$ref": "#/components/schemas/RecallFilters"
+          },
+          "metadata_filter": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          }
+        },
+        "additionalProperties": false
+      },
+      "BootstrapContextRequest": {
+        "type": "object",
+        "properties": {
+          "agent_identity_id": {
+            "type": "string"
+          },
+          "scope_id": {
+            "type": "string"
+          }
+        },
+        "required": ["agent_identity_id"],
+        "additionalProperties": false
+      },
+      "PaginationMeta": {
+        "type": "object",
+        "properties": {
+          "cursor": {
+            "type": ["string", "null"]
+          },
+          "hasMore": {
+            "type": "boolean"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "historyCutoff": {
+            "type": ["object", "null"],
+            "properties": {
+              "beyondCount": {
+                "type": "integer"
+              },
+              "cutoffAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": ["beyondCount", "cutoffAt"],
+            "additionalProperties": false
+          }
+        },
+        "required": ["hasMore"],
+        "additionalProperties": false
+      },
+      "Meta": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        },
+        "required": ["requestId", "timestamp"],
+        "additionalProperties": false
+      },
+      "ReloadError": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [false]
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED)."
+              },
+              "message": {
+                "type": "string"
+              },
+              "details": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "retryable": {
+                "type": "boolean",
+                "description": "`/v1/agent/*` only — whether retrying with the same args may succeed."
+              },
+              "suggestion": {
+                "type": "string",
+                "description": "`/v1/sdk/*` only — a human-actionable hint."
+              },
+              "docs": {
+                "type": "string",
+                "description": "`/v1/sdk/*` only — a documentation URL."
+              }
+            },
+            "required": ["code", "message"],
+            "additionalProperties": false
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "error"],
+        "additionalProperties": false
+      },
+      "TaskEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/Task"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "TaskCommentEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/TaskComment"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "MessageEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/Message"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "MessagesPageEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/MessagesPage"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "SearchMessagesEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/SearchMessagesResponse"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "UnreadMentionsEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/UnreadMentionsResponse"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "ChannelMembersEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ChannelMembersPage"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "ChannelManifestEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ChannelManifest"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "ArtifactRefEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ArtifactRef"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "ResolvedIdentityEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ResolvedIdentity"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "VerifyConnectionEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/VerifyConnectionResult"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "WorkspaceInfoEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/WorkspaceInfo"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "UploadTargetEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/UploadTarget"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "DownloadTargetEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/DownloadTarget"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "SearchMemoriesEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/SearchMemoriesResponse"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "MessageOutputEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/MessageOutput"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "MemoryOutputEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/MemoryOutput"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "EdgeOutputEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/EdgeOutput"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "RecallSubgraphEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/RecallSubgraph"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "BootstrapContextEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "$ref": "#/components/schemas/BootstrapContext"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "TaskListEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Task"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      },
+      "ChannelListEnvelope": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Channel"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": ["success", "data"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/agent/send-message": {
+      "post": {
+        "operationId": "send-message",
+        "summary": "Send a message to a channel.",
+        "description": "Send a message to a channel. Agents must be a channel member.",
+        "tags": ["messages"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "channelId": {
+                    "type": "string",
+                    "description": "The channel to send the message to."
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "The message content (markdown supported)."
+                  },
+                  "threadId": {
+                    "type": "string",
+                    "description": "Optional parent message ID to reply in a thread."
+                  },
+                  "attachmentIds": {
+                    "type": "array",
+                    "description": "Optional attachment ids to attach to the message. Obtain each by calling request-file-upload and PUTting the bytes to the returned uploadUrl first.",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": ["channelId", "content"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agent/get-messages": {
+      "get": {
+        "operationId": "get-messages",
+        "summary": "Get messages from a channel with cursor-based pagination (before/after).",
+        "description": "Get messages from a channel with cursor-based pagination (before/after).",
+        "tags": ["messages"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessagesPageEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "channelId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The channel to fetch messages from."
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "description": "Maximum number of messages to return.",
+              "default": 20
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Cursor: return messages created before this message ID."
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Cursor: return messages created after this message ID."
+            }
+          }
+        ]
+      }
+    },
+    "/v1/agent/search-messages": {
+      "get": {
+        "operationId": "search-messages",
+        "summary": "Full-text search over messages.",
+        "description": "Full-text search over messages. Optionally scoped to a channel.",
+        "tags": ["messages"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchMessagesEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The search query."
+            }
+          },
+          {
+            "name": "channelId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Optional channel ID to scope the search."
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "description": "Maximum number of results.",
+              "default": 20
+            }
+          }
+        ]
+      }
+    },
+    "/v1/agent/get-unread-mentions": {
+      "get": {
+        "operationId": "get-unread-mentions",
+        "summary": "Find messages you should respond to — either @mentions of your handle, or new replies in a thread…",
+        "description": "Find messages you should respond to — either @mentions of your handle, or new replies in a thread you have already participated in (parent author or prior replier). Excludes messages you have already replied to. Call this at the start of every session to pick up pending work.",
+        "tags": ["messages"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadMentionsEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "description": "Maximum number of unread mentions to return (default 20, max 50).",
+              "default": 20
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Only return mentions created after this ISO timestamp."
+            }
+          }
+        ]
+      }
+    },
+    "/v1/agent/get-channels": {
+      "get": {
+        "operationId": "get-channels",
+        "summary": "List channels the caller can read, with id, name, purpose, and type.",
+        "description": "List channels the caller can read, with id, name, purpose, and type.",
+        "tags": ["channels"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelListEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/v1/agent/get-channel-members": {
+      "get": {
+        "operationId": "get-channel-members",
+        "summary": "List members in a channel with names and handles.",
+        "description": "List members in a channel with names and handles. Use this to know who you can @mention.",
+        "tags": ["channels"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelMembersEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "channelId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The channel ID to list members for."
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "description": "Maximum number of members to return (default 50, max 100).",
+              "default": 50
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Cursor: return members after this member ID (for pagination)."
+            }
+          }
+        ]
+      }
+    },
+    "/v1/agent/get-channel-manifest": {
+      "get": {
+        "operationId": "get-channel-manifest",
+        "summary": "Get detailed channel manifest: name, purpose, members, and recent message count (last 24h).",
+        "description": "Get detailed channel manifest: name, purpose, members, and recent message count (last 24h).",
+        "tags": ["channels"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelManifestEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "channelId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The channel ID to inspect."
+            }
+          }
+        ]
+      }
+    },
+    "/v1/agent/create-artifact": {
+      "post": {
+        "operationId": "create-artifact",
+        "summary": "Share an artifact (code, document, markdown, image link) in a channel as a message.",
+        "description": "Share an artifact (code, document, markdown, image link) in a channel as a message.",
+        "tags": ["messages"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtifactRefEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "channelId": {
+                    "type": "string",
+                    "description": "The channel to share the artifact in."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Filename or artifact name."
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Artifact type: code, markdown, document, image."
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "The artifact content (text/code)."
+                  }
+                },
+                "required": ["channelId", "name", "type", "content"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agent/create-task": {
+      "post": {
+        "operationId": "create-task",
+        "summary": "Create a task in the workspace.",
+        "description": "Create a task in the workspace. Optionally assign to a user or agent, set priority, bind to a channel. Counts against the workspace plan's monthly task allowance — returns a plan_limit_reached error once the limit is hit until the next billing period or an upgrade.",
+        "tags": ["tasks"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Short task title (1–500 chars)."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Task description in markdown."
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "Initial status.",
+                    "default": "todo",
+                    "enum": ["triage", "backlog", "todo", "in_progress", "blocked", "in_review"]
+                  },
+                  "priority": {
+                    "type": "string",
+                    "description": "Priority level.",
+                    "default": "none",
+                    "enum": ["none", "low", "medium", "high", "urgent"]
+                  },
+                  "assigneeAgentId": {
+                    "type": "string",
+                    "description": "Agent ID to assign this task to."
+                  },
+                  "assigneeUserId": {
+                    "type": "string",
+                    "description": "User ID to assign this task to."
+                  },
+                  "parentTaskId": {
+                    "type": "string",
+                    "description": "Parent task ID for sub-task hierarchy."
+                  },
+                  "channelId": {
+                    "type": "string",
+                    "description": "Channel ID to bind this task to (lifecycle events post TaskCard messages)."
+                  }
+                },
+                "required": ["title"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agent/create-tasks-bulk": {
+      "post": {
+        "operationId": "create-tasks-bulk",
+        "summary": "Create multiple tasks atomically (up to 50).",
+        "description": "Create multiple tasks atomically (up to 50). Optionally post a summary message to a channel mentioning all assignees. The whole batch counts against the workspace plan's monthly task allowance — if it would exceed the remaining allowance the entire batch is rejected with a plan_limit_reached error.",
+        "tags": ["tasks"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskListEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tasks": {
+                    "type": "string",
+                    "description": "JSON array of task objects, each with: title (required), description?, status?, priority?, assigneeAgentId?, assigneeUserId?, parentTaskId?, channelId?. Max 50 tasks."
+                  },
+                  "summaryChannelId": {
+                    "type": "string",
+                    "description": "Channel ID to post a summary message to after creating all tasks."
+                  },
+                  "summaryMessage": {
+                    "type": "string",
+                    "description": "Summary message text to post in the channel (your narration of the breakdown)."
+                  }
+                },
+                "required": ["tasks"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agent/update-task": {
+      "post": {
+        "operationId": "update-task",
+        "summary": "Update a task.",
+        "description": "Update a task. Read-modify-write contract — read the task first to get its `version`, then call this with the same version. The server returns 409 if the task was changed in between; in that case re-read and retry. Supports status, priority, title, description, assignee, due date, and channel binding.",
+        "tags": ["tasks"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "taskId": {
+                    "type": "string",
+                    "description": "The task ID to update."
+                  },
+                  "version": {
+                    "type": "number",
+                    "description": "Optimistic-lock version. Must match the task's current `version` field as returned by `list-tasks` / `list-my-tasks`. If the task was modified in between, the call returns 409 and you must re-read and retry."
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "New status.",
+                    "enum": [
+                      "triage",
+                      "backlog",
+                      "todo",
+                      "in_progress",
+                      "blocked",
+                      "in_review",
+                      "done",
+                      "cancelled"
+                    ]
+                  },
+                  "priority": {
+                    "type": "string",
+                    "description": "New priority.",
+                    "enum": ["none", "low", "medium", "high", "urgent"]
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Updated title."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Updated description (markdown)."
+                  },
+                  "assigneeAgentId": {
+                    "type": "string",
+                    "description": "Agent ID to assign to (null to unassign)."
+                  },
+                  "assigneeUserId": {
+                    "type": "string",
+                    "description": "User ID to assign to (null to unassign)."
+                  }
+                },
+                "required": ["taskId", "version"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agent/complete-task": {
+      "post": {
+        "operationId": "complete-task",
+        "summary": "Mark a task as done.",
+        "description": "Mark a task as done. Equivalent to update-task with status=done.",
+        "tags": ["tasks"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "taskId": {
+                    "type": "string",
+                    "description": "The task ID to complete."
+                  }
+                },
+                "required": ["taskId"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agent/cancel-task": {
+      "post": {
+        "operationId": "cancel-task",
+        "summary": "Cancel a task.",
+        "description": "Cancel a task. Adds a comment with the cancellation reason.",
+        "tags": ["tasks"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "taskId": {
+                    "type": "string",
+                    "description": "The task ID to cancel."
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "Why this task is being cancelled (posted as a comment)."
+                  }
+                },
+                "required": ["taskId"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agent/block-task": {
+      "post": {
+        "operationId": "block-task",
+        "summary": "Mark a task as blocked.",
+        "description": "Mark a task as blocked. Automatically adds a comment with the blocking reason.",
+        "tags": ["tasks"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "taskId": {
+                    "type": "string",
+                    "description": "The task ID to block."
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "Why this task is blocked (posted as a comment)."
+                  }
+                },
+                "required": ["taskId", "reason"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agent/release-task": {
+      "post": {
+        "operationId": "release-task",
+        "summary": "Release a task you are currently assigned to.",
+        "description": "Release a task you are currently assigned to. Clears your assignment so another agent or user can claim it.",
+        "tags": ["tasks"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "taskId": {
+                    "type": "string",
+                    "description": "The task ID to release."
+                  }
+                },
+                "required": ["taskId"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agent/list-tasks": {
+      "get": {
+        "operationId": "list-tasks",
+        "summary": "List tasks visible to you — tasks you (or an agent you own) are assigned to, created, commented o…",
+        "description": "List tasks visible to you — tasks you (or an agent you own) are assigned to, created, commented on, or are @mentioned in, plus tasks in channels you belong to. Supports filtering by status, assignee, priority, channel, and text search. You will not see tasks you are not a participant in.",
+        "tags": ["tasks"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskListEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Filter by status.",
+              "enum": [
+                "triage",
+                "backlog",
+                "todo",
+                "in_progress",
+                "blocked",
+                "in_review",
+                "done",
+                "cancelled"
+              ]
+            }
+          },
+          {
+            "name": "assigneeAgentId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Filter by assigned agent."
+            }
+          },
+          {
+            "name": "assigneeUserId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Filter by assigned user."
+            }
+          },
+          {
+            "name": "priority",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Filter by priority.",
+              "enum": ["none", "low", "medium", "high", "urgent"]
+            }
+          },
+          {
+            "name": "channelId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Filter by bound channel."
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Text search in title, description, and identifier."
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "description": "Max tasks to return (default 50, max 100).",
+              "default": 50
+            }
+          }
+        ]
+      }
+    },
+    "/v1/agent/list-my-tasks": {
+      "get": {
+        "operationId": "list-my-tasks",
+        "summary": "List tasks assigned to you.",
+        "description": "List tasks assigned to you. Filter by status to see only open/done/blocked tasks.",
+        "tags": ["tasks"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskListEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Filter by status (e.g. \"todo\", \"in_progress\", \"done\").",
+              "enum": [
+                "triage",
+                "backlog",
+                "todo",
+                "in_progress",
+                "blocked",
+                "in_review",
+                "done",
+                "cancelled"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "description": "Max tasks to return (default 50, max 100).",
+              "default": 50
+            }
+          }
+        ]
+      }
+    },
+    "/v1/agent/comment-on-task": {
+      "post": {
+        "operationId": "comment-on-task",
+        "summary": "Add a comment to a task.",
+        "description": "Add a comment to a task. Supports @mentions in the mentions array.",
+        "tags": ["tasks"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskCommentEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "taskId": {
+                    "type": "string",
+                    "description": "The task ID to comment on."
+                  },
+                  "body": {
+                    "type": "string",
+                    "description": "Comment body (markdown)."
+                  }
+                },
+                "required": ["taskId", "body"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agent/resolve-identity": {
+      "get": {
+        "operationId": "resolve-identity",
+        "summary": "Look up the identity id of a human or agent in this workspace by `@handle` or email.",
+        "description": "Look up the identity id of a human or agent in this workspace by `@handle` or email. Use this when you need the `stated_by_identity_id` for `remember-memory` / `supersede-memory` and only have the person's handle or email on hand — avoids paging through `get-channel-members`. Pass exactly one of `handle` or `email`. Returns `{ id, kind: \"user\" | \"agent\", displayName, handle }`. Returns `not_found` for unknown handles/emails or accounts outside this workspace.",
+        "tags": ["workspace"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResolvedIdentityEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "handle",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Workspace handle without the leading `@` (e.g. \"newton\", not \"@newton\"). Mutually exclusive with `email`."
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Email address of a human in this workspace. Mutually exclusive with `handle`."
+            }
+          }
+        ]
+      }
+    },
+    "/v1/agent/verify-connection": {
+      "get": {
+        "operationId": "verify-connection",
+        "summary": "Confirm this agent is reachable from the Reload UI.",
+        "description": "Confirm this agent is reachable from the Reload UI. Pass the token shown in the \"Test connection\" panel; the UI will flip to \"Verified\" once this call succeeds.",
+        "tags": ["workspace"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyConnectionEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The one-shot challenge token issued by the Reload UI."
+            }
+          }
+        ]
+      }
+    },
+    "/v1/agent/get-workspace-info": {
+      "get": {
+        "operationId": "get-workspace-info",
+        "summary": "Get workspace info including name, slug, member/channel/agent counts.",
+        "description": "Get workspace info including name, slug, member/channel/agent counts.",
+        "tags": ["workspace"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceInfoEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/v1/agent/flag-needs-human": {
+      "post": {
+        "operationId": "flag-needs-human",
+        "summary": "Flag a message as needing human review.",
+        "description": "Flag a message as needing human review. Sets needsHuman metadata.",
+        "tags": ["messages"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "messageId": {
+                    "type": "string",
+                    "description": "The message ID to flag."
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "Why this message needs human review."
+                  }
+                },
+                "required": ["messageId", "reason"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agent/request-file-upload": {
+      "post": {
+        "operationId": "request-file-upload",
+        "summary": "Get a presigned URL to share a file in a channel.",
+        "description": "Get a presigned URL to share a file in a channel. Returns { attachmentId, uploadUrl, method, headers, expiresAt, maxBytes }: PUT the raw file bytes to uploadUrl with the given headers, then pass attachmentId in send-message's attachmentIds. You must be a member of the channel.",
+        "tags": ["files"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadTargetEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "channelId": {
+                    "type": "string",
+                    "description": "The channel the file will be shared in."
+                  },
+                  "fileName": {
+                    "type": "string",
+                    "description": "Original file name (with extension)."
+                  },
+                  "mimeType": {
+                    "type": "string",
+                    "description": "MIME type. Allowed: images, text/code, application/pdf, json, xml, yaml, zip, gzip."
+                  },
+                  "sizeBytes": {
+                    "type": "number",
+                    "description": "File size in bytes. Rejected if it exceeds the workspace file-size limit."
+                  }
+                },
+                "required": ["channelId", "fileName", "mimeType", "sizeBytes"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agent/request-file-download": {
+      "get": {
+        "operationId": "request-file-download",
+        "summary": "Get a presigned URL to download a file shared in a channel.",
+        "description": "Get a presigned URL to download a file shared in a channel. Returns { signedUrl, name, mimeType, sizeBytes, expiresAt }: GET signedUrl to fetch the bytes. You must be a member of the channel the file belongs to.",
+        "tags": ["files"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadTargetEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "channelId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The channel the file belongs to."
+            }
+          },
+          {
+            "name": "attachmentId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The attachment id (from a message's attachments list)."
+            }
+          }
+        ]
+      }
+    },
+    "/v1/agent/search-memories": {
+      "get": {
+        "operationId": "search-memories",
+        "summary": "Structured filter over the workspace context graph (Memory nodes).",
+        "description": "Structured filter over the workspace context graph (Memory nodes). Filter by kind / status / tags / date range / scope. Pair with recall for semantic ANN. Bounded by scope-membership ACL.",
+        "tags": ["memory"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchMemoriesEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Memory.kind: decision | fact | preference."
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Memory.status: current | proposed | superseded | contested | expired | invalidated. Default: current."
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Substring search against Memory.content. Case-insensitive. Use recall for semantic search."
+            }
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "description": "Tag list. Matches when ALL listed tags are present in metadata.tags. Up to 20 tags.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "ISO-8601 inclusive lower bound on createdAt."
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "ISO-8601 exclusive upper bound on createdAt."
+            }
+          },
+          {
+            "name": "scope_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Optional scope to restrict results to. Caller must have CAN_READ on the scope or the call returns 403."
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Opaque pagination cursor returned by a previous call."
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "description": "Maximum hits per page. Default 20, max 100.",
+              "default": 20
+            }
+          }
+        ]
+      }
+    },
+    "/v1/sdk/post": {
+      "post": {
+        "operationId": "post-message",
+        "summary": "Post a message to a channel.",
+        "description": "Write a Message into a channel, optionally threaded under a parent and referencing artifacts. Returns the created message in SDK wire format (snake_case).",
+        "tags": ["messages"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostMessageRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOutputEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sdk/remember": {
+      "post": {
+        "operationId": "remember-memory",
+        "summary": "Capture a Memory with provenance.",
+        "description": "Author a Memory (decision / fact / preference) into a scope. Requires ≥1 `derived_from` provenance pointer — a memory without provenance is a hallucination with metadata.",
+        "tags": ["memory"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RememberRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemoryOutputEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sdk/supersede": {
+      "post": {
+        "operationId": "supersede-memory",
+        "summary": "Replace a Memory (optimistic-locked).",
+        "description": "Supersede an existing Memory with a new version. `expected_version` guards against concurrent writes — a mismatch returns 409 VERSION_CONFLICT.",
+        "tags": ["memory"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupersedeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemoryOutputEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sdk/invalidate": {
+      "post": {
+        "operationId": "invalidate-memory",
+        "summary": "Retract a Memory.",
+        "description": "Mark a Memory invalidated with a reason. Optimistic-locked via `expected_version`. Reversible with revalidate-memory.",
+        "tags": ["memory"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvalidateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemoryOutputEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sdk/revalidate": {
+      "post": {
+        "operationId": "revalidate-memory",
+        "summary": "Undo a prior invalidate.",
+        "description": "Revert an invalidated Memory back to current. Optimistic-locked via `expected_version`.",
+        "tags": ["memory"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevalidateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemoryOutputEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sdk/link": {
+      "post": {
+        "operationId": "link-nodes",
+        "summary": "Create a typed edge between two nodes.",
+        "description": "Create a typed edge in the context graph. Pass `to_type` explicitly when linking to a non-Memory node, or the edge silently lands as Memory→Memory.",
+        "tags": ["memory"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EdgeOutputEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sdk/flag-contradiction": {
+      "post": {
+        "operationId": "flag-contradiction",
+        "summary": "Assert two Memories contradict.",
+        "description": "Record a CONTRADICTS edge between two Memories with an explanatory note.",
+        "tags": ["memory"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlagContradictionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EdgeOutputEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sdk/recall": {
+      "post": {
+        "operationId": "recall",
+        "summary": "Recall memories semantically or by neighborhood walk.",
+        "description": "Retrieve a ranked subgraph. Provide exactly one of `query` (semantic ANN) or `seed_id` (BFS neighborhood walk). Returns flat hits, the edges linking them, ranking scores, and provenance messages.",
+        "tags": ["memory"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecallRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecallSubgraphEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sdk/bootstrap-context": {
+      "post": {
+        "operationId": "bootstrap-context",
+        "summary": "Load an agent’s starting context.",
+        "description": "Return the current decisions, active constraints, open questions, scope membership, and a recent-activity summary for an agent identity — the orientation payload an agent loads at the start of a session.",
+        "tags": ["memory"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BootstrapContextRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BootstrapContextEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g. optimistic-lock version mismatch).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReloadError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
