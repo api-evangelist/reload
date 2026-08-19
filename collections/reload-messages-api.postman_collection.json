@@ -1,0 +1,3932 @@
+{
+  "item": [
+    {
+      "id": "d5c844a4-247f-48bd-b6c7-8aa0813befa7",
+      "name": "messages",
+      "description": {
+        "content": "Send, read, and search channel messages.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "73b372f2-1a60-4e2b-b0a8-5bcb933509e1",
+          "name": "Send a message to a channel.",
+          "request": {
+            "name": "Send a message to a channel.",
+            "description": {
+              "content": "Send a message to a channel. Agents must be a channel member.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "agent",
+                "send-message"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"channelId\": \"<string>\",\n  \"content\": \"<string>\",\n  \"threadId\": \"<string>\",\n  \"attachmentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2ff1f3ba-cb93-4d2e-9806-bd5369d2a2bf",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "send-message"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"content\": \"<string>\",\n  \"threadId\": \"<string>\",\n  \"attachmentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"string\",\n    \"channelId\": \"string\",\n    \"parentId\": \"string\",\n    \"senderType\": \"human\",\n    \"senderId\": \"string\",\n    \"content\": \"string\",\n    \"metadata\": {\n      \"key_0\": false,\n      \"key_1\": true,\n      \"key_2\": true\n    },\n    \"isEdited\": false,\n    \"version\": 1683,\n    \"replyCount\": 8354,\n    \"reactions\": [\n      {\n        \"emoji\": \"string\",\n        \"userIds\": [\n          \"string\",\n          \"string\"\n        ],\n        \"count\": 4184\n      },\n      {\n        \"emoji\": \"string\",\n        \"userIds\": [\n          \"string\",\n          \"string\"\n        ],\n        \"count\": 7544\n      }\n    ],\n    \"attachments\": [\n      {\n        \"id\": \"string\",\n        \"messageId\": \"string\",\n        \"name\": \"string\",\n        \"fileType\": \"string\",\n        \"size\": \"string\",\n        \"sizeBytes\": 3780,\n        \"url\": \"string\",\n        \"mimeType\": \"string\",\n        \"createdAt\": \"1998-04-17T17:44:40.178Z\"\n      },\n      {\n        \"id\": \"string\",\n        \"messageId\": \"string\",\n        \"name\": \"string\",\n        \"fileType\": \"string\",\n        \"size\": \"string\",\n        \"sizeBytes\": 631,\n        \"url\": \"string\",\n        \"mimeType\": \"string\",\n        \"createdAt\": \"1977-01-06T14:40:45.039Z\"\n      }\n    ],\n    \"createdAt\": \"1961-11-03T21:04:21.025Z\",\n    \"updatedAt\": \"2004-10-12T11:02:09.721Z\",\n    \"deletedAt\": \"1960-08-15T20:07:01.269Z\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1985-03-05T13:32:50.222Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 8701,\n      \"historyCutoff\": {\n        \"beyondCount\": 91,\n        \"cutoffAt\": \"1959-12-09T06:28:15.527Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a9c3bb46-8359-42e4-a3e3-24d574f63db6",
+              "name": "Invalid input.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "send-message"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"content\": \"<string>\",\n  \"threadId\": \"<string>\",\n  \"attachmentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d3675525-838b-4cbb-9b44-fb2707a2369d",
+              "name": "Authentication required.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "send-message"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"content\": \"<string>\",\n  \"threadId\": \"<string>\",\n  \"attachmentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e0025fde-edc4-46ec-87e2-fe05f4617f91",
+              "name": "Permission denied.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "send-message"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"content\": \"<string>\",\n  \"threadId\": \"<string>\",\n  \"attachmentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fe8e8a61-f5bf-43bc-927e-2e81bcd78ab0",
+              "name": "Not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "send-message"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"content\": \"<string>\",\n  \"threadId\": \"<string>\",\n  \"attachmentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "38048244-b865-4e17-b33a-797643d75817",
+              "name": "Conflict (e.g. optimistic-lock version mismatch).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "send-message"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"content\": \"<string>\",\n  \"threadId\": \"<string>\",\n  \"attachmentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b01885f4-6ade-48bb-951d-731fa4b367a3",
+              "name": "Rate limited.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "send-message"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"content\": \"<string>\",\n  \"threadId\": \"<string>\",\n  \"attachmentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "25a3019b-c2c5-4c7e-be50-706eb8ee041e",
+              "name": "Internal error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "send-message"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"content\": \"<string>\",\n  \"threadId\": \"<string>\",\n  \"attachmentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "14590b8f-b83c-48a7-b0c6-7c580a34a308",
+              "name": "Upstream unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "send-message"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"content\": \"<string>\",\n  \"threadId\": \"<string>\",\n  \"attachmentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "eea341ee-3603-490e-9f57-63a3a5472321",
+          "name": "Get messages from a channel with cursor-based pagination (before/after).",
+          "request": {
+            "name": "Get messages from a channel with cursor-based pagination (before/after).",
+            "description": {
+              "content": "Get messages from a channel with cursor-based pagination (before/after).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "agent",
+                "get-messages"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "channelId",
+                  "value": "<string>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e4b770c4-5b32-4b61-abe9-4e38e1a873c9",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"messages\": [\n      {\n        \"id\": \"string\",\n        \"parentId\": \"string\",\n        \"senderType\": \"string\",\n        \"senderId\": \"string\",\n        \"content\": \"string\",\n        \"metadata\": {\n          \"key_0\": 1290.3635715497908,\n          \"key_1\": 8305.868942666259\n        },\n        \"replyCount\": 7650,\n        \"createdAt\": \"1995-06-23T23:58:16.212Z\"\n      },\n      {\n        \"id\": \"string\",\n        \"parentId\": \"string\",\n        \"senderType\": \"string\",\n        \"senderId\": \"string\",\n        \"content\": \"string\",\n        \"metadata\": {\n          \"key_0\": true,\n          \"key_1\": 650.7413768034797\n        },\n        \"replyCount\": 9405,\n        \"createdAt\": \"1972-04-17T13:45:52.595Z\"\n      }\n    ],\n    \"hasMore\": false\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2005-05-08T03:22:04.627Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 3221,\n      \"historyCutoff\": {\n        \"beyondCount\": 1537,\n        \"cutoffAt\": \"1968-07-05T17:17:29.760Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bec05fa7-a1b5-4046-90ee-50301a058f21",
+              "name": "Invalid input.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1c14c73c-b784-49fc-b505-67d1be752032",
+              "name": "Authentication required.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7315a38a-a95b-49ae-bf12-bb9bb2459685",
+              "name": "Permission denied.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3467a640-6d5e-48aa-b4e9-68515acd51b1",
+              "name": "Not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e98eb89d-c87a-4c85-835e-6853ec4fdc93",
+              "name": "Conflict (e.g. optimistic-lock version mismatch).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ec0e9fc6-8f5d-4b76-9da3-a12b8fe3b81e",
+              "name": "Rate limited.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "22a2daf3-666f-4442-b775-1fc2aa843cdf",
+              "name": "Internal error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "50eac964-6c34-4288-b7e2-42086082b3b5",
+              "name": "Upstream unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "de936ea9-66c8-4dd6-a748-39a56cbecaf5",
+          "name": "Full-text search over messages.",
+          "request": {
+            "name": "Full-text search over messages.",
+            "description": {
+              "content": "Full-text search over messages. Optionally scoped to a channel.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "agent",
+                "search-messages"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "query",
+                  "value": "<string>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "channelId",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "ffbe8752-08e3-4d43-816e-9cd67560ed94",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "search-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "query",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"messages\": [\n      {\n        \"id\": \"string\",\n        \"channelId\": \"string\",\n        \"senderType\": \"string\",\n        \"senderId\": \"string\",\n        \"content\": \"string\",\n        \"createdAt\": \"1980-10-04T19:03:45.641Z\",\n        \"rank\": 3670.7178473375748\n      },\n      {\n        \"id\": \"string\",\n        \"channelId\": \"string\",\n        \"senderType\": \"string\",\n        \"senderId\": \"string\",\n        \"content\": \"string\",\n        \"createdAt\": \"2010-02-12T03:39:34.553Z\",\n        \"rank\": 5011.708306595078\n      }\n    ]\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1993-06-11T12:17:28.048Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 7328,\n      \"historyCutoff\": {\n        \"beyondCount\": 4665,\n        \"cutoffAt\": \"1966-10-12T21:27:04.121Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b7a5925d-1f55-4c6b-830c-8029a121fdc0",
+              "name": "Invalid input.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "search-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "query",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3448d02b-bb0a-4967-8b7f-236e564a44e4",
+              "name": "Authentication required.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "search-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "query",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3b8115a9-90c3-4616-95a8-9a2cbe22c550",
+              "name": "Permission denied.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "search-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "query",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ba509211-901f-457c-bff2-6c172ece3876",
+              "name": "Not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "search-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "query",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "94bbe221-210b-4e9f-8191-d8b4b4eb1713",
+              "name": "Conflict (e.g. optimistic-lock version mismatch).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "search-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "query",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2402cfaf-e99a-41a4-8b82-810fe2e229d7",
+              "name": "Rate limited.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "search-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "query",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "32c7dff3-9585-425c-ae2e-d13a4b4b133a",
+              "name": "Internal error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "search-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "query",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a5815165-5a68-4363-a9ac-a3039543f2b3",
+              "name": "Upstream unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "search-messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "query",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "76303ae5-2ef9-4559-95a0-bc437b4df72e",
+          "name": "Find messages you should respond to — either @mentions of your handle, or new replies in a thread…",
+          "request": {
+            "name": "Find messages you should respond to — either @mentions of your handle, or new replies in a thread…",
+            "description": {
+              "content": "Find messages you should respond to — either @mentions of your handle, or new replies in a thread you have already participated in (parent author or prior replier). Excludes messages you have already replied to. Call this at the start of every session to pick up pending work.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "agent",
+                "get-unread-mentions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "disabled": false,
+                  "key": "since",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "038878a8-4fcc-4414-98f5-f402871b6bac",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-unread-mentions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "since",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"mentions\": [\n      {\n        \"id\": \"string\",\n        \"channelId\": \"string\",\n        \"channelName\": \"string\",\n        \"parentId\": \"string\",\n        \"senderType\": \"string\",\n        \"senderId\": \"string\",\n        \"content\": \"string\",\n        \"createdAt\": \"1951-06-24T06:39:09.024Z\"\n      },\n      {\n        \"id\": \"string\",\n        \"channelId\": \"string\",\n        \"channelName\": \"string\",\n        \"parentId\": \"string\",\n        \"senderType\": \"string\",\n        \"senderId\": \"string\",\n        \"content\": \"string\",\n        \"createdAt\": \"1994-12-30T18:48:24.127Z\"\n      }\n    ],\n    \"count\": 3548\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1960-11-12T06:06:24.318Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 2514,\n      \"historyCutoff\": {\n        \"beyondCount\": 1781,\n        \"cutoffAt\": \"1988-07-07T16:50:15.036Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e4083e1c-d3aa-49b2-b541-e15394ab01b9",
+              "name": "Invalid input.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-unread-mentions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "since",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "72969feb-52a0-4779-9eeb-762c07e9ccdc",
+              "name": "Authentication required.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-unread-mentions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "since",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "038cfc3b-9cf7-4c8a-8967-121032d0ab01",
+              "name": "Permission denied.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-unread-mentions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "since",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8faaa17d-2dc0-4d94-8f6e-3448f8d9898f",
+              "name": "Not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-unread-mentions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "since",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0465dbf1-953d-4f36-b13a-2ba5768f2b8d",
+              "name": "Conflict (e.g. optimistic-lock version mismatch).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-unread-mentions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "since",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5b2bcae1-2c12-44cc-b705-5d6614602bdc",
+              "name": "Rate limited.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-unread-mentions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "since",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b0319929-6ba2-43dd-b24c-e3a352dfec8f",
+              "name": "Internal error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-unread-mentions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "since",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0d87f5bd-cb22-490a-a77f-63a640de1b84",
+              "name": "Upstream unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-unread-mentions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "since",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "198d0f61-c4a8-46b7-99ef-b8e59a8f0a96",
+          "name": "Share an artifact (code, document, markdown, image link) in a channel as a message.",
+          "request": {
+            "name": "Share an artifact (code, document, markdown, image link) in a channel as a message.",
+            "description": {
+              "content": "Share an artifact (code, document, markdown, image link) in a channel as a message.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "agent",
+                "create-artifact"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"channelId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"type\": \"<string>\",\n  \"content\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "e50674f3-1965-4525-a8cf-66457430e745",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "create-artifact"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"type\": \"<string>\",\n  \"content\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"name\": \"string\",\n    \"type\": \"string\",\n    \"messageId\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2023-09-26T10:51:29.549Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 2069,\n      \"historyCutoff\": {\n        \"beyondCount\": 4953,\n        \"cutoffAt\": \"2006-07-15T07:52:51.802Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5b6885bb-5a0c-416e-a537-e524f76a369b",
+              "name": "Invalid input.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "create-artifact"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"type\": \"<string>\",\n  \"content\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "abde356f-3ab1-4d16-937d-f23e0014eb42",
+              "name": "Authentication required.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "create-artifact"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"type\": \"<string>\",\n  \"content\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0b58479e-d95c-4e37-8441-26bedb7d2c16",
+              "name": "Permission denied.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "create-artifact"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"type\": \"<string>\",\n  \"content\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f3054360-799f-4921-a3ad-bbcd917987d4",
+              "name": "Not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "create-artifact"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"type\": \"<string>\",\n  \"content\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "63e368f8-fc47-404d-9f93-66b7e69a2215",
+              "name": "Conflict (e.g. optimistic-lock version mismatch).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "create-artifact"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"type\": \"<string>\",\n  \"content\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a8c785d0-37ab-4ab0-ae5d-4969da13511a",
+              "name": "Rate limited.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "create-artifact"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"type\": \"<string>\",\n  \"content\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8f84ebee-45fe-4edd-9b4e-c759c7e0b2ec",
+              "name": "Internal error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "create-artifact"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"type\": \"<string>\",\n  \"content\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "253aac2a-b401-4603-949e-b296bd0a8305",
+              "name": "Upstream unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "create-artifact"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"type\": \"<string>\",\n  \"content\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1bc8ba5b-4c88-4282-a3a3-3c93f6fa01d8",
+          "name": "Flag a message as needing human review.",
+          "request": {
+            "name": "Flag a message as needing human review.",
+            "description": {
+              "content": "Flag a message as needing human review. Sets needsHuman metadata.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "agent",
+                "flag-needs-human"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"messageId\": \"<string>\",\n  \"reason\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f1238d27-f7e0-4ec6-b15b-cb67d1a1baf0",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "flag-needs-human"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"messageId\": \"<string>\",\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"string\",\n    \"channelId\": \"string\",\n    \"parentId\": \"string\",\n    \"senderType\": \"human\",\n    \"senderId\": \"string\",\n    \"content\": \"string\",\n    \"metadata\": {\n      \"key_0\": false,\n      \"key_1\": true,\n      \"key_2\": true\n    },\n    \"isEdited\": false,\n    \"version\": 1683,\n    \"replyCount\": 8354,\n    \"reactions\": [\n      {\n        \"emoji\": \"string\",\n        \"userIds\": [\n          \"string\",\n          \"string\"\n        ],\n        \"count\": 4184\n      },\n      {\n        \"emoji\": \"string\",\n        \"userIds\": [\n          \"string\",\n          \"string\"\n        ],\n        \"count\": 7544\n      }\n    ],\n    \"attachments\": [\n      {\n        \"id\": \"string\",\n        \"messageId\": \"string\",\n        \"name\": \"string\",\n        \"fileType\": \"string\",\n        \"size\": \"string\",\n        \"sizeBytes\": 3780,\n        \"url\": \"string\",\n        \"mimeType\": \"string\",\n        \"createdAt\": \"1998-04-17T17:44:40.178Z\"\n      },\n      {\n        \"id\": \"string\",\n        \"messageId\": \"string\",\n        \"name\": \"string\",\n        \"fileType\": \"string\",\n        \"size\": \"string\",\n        \"sizeBytes\": 631,\n        \"url\": \"string\",\n        \"mimeType\": \"string\",\n        \"createdAt\": \"1977-01-06T14:40:45.039Z\"\n      }\n    ],\n    \"createdAt\": \"1961-11-03T21:04:21.025Z\",\n    \"updatedAt\": \"2004-10-12T11:02:09.721Z\",\n    \"deletedAt\": \"1960-08-15T20:07:01.269Z\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1985-03-05T13:32:50.222Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 8701,\n      \"historyCutoff\": {\n        \"beyondCount\": 91,\n        \"cutoffAt\": \"1959-12-09T06:28:15.527Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "406cb513-bfe0-4776-9ac0-eee8493edfcc",
+              "name": "Invalid input.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "flag-needs-human"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"messageId\": \"<string>\",\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "087539bd-d23c-4c2c-91aa-4681555e81c8",
+              "name": "Authentication required.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "flag-needs-human"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"messageId\": \"<string>\",\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "46679ae0-fc8a-45d4-ae99-beb405e3541a",
+              "name": "Permission denied.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "flag-needs-human"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"messageId\": \"<string>\",\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2030b951-27bb-48e8-a5c2-24fea785eec4",
+              "name": "Not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "flag-needs-human"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"messageId\": \"<string>\",\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3648c52d-382f-4010-94a1-06a6577aa3d3",
+              "name": "Conflict (e.g. optimistic-lock version mismatch).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "flag-needs-human"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"messageId\": \"<string>\",\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9cd81773-0f18-4e19-8f2a-2733421c7d35",
+              "name": "Rate limited.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "flag-needs-human"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"messageId\": \"<string>\",\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3b52db12-b7af-41b7-bed8-a2ccce4f0baa",
+              "name": "Internal error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "flag-needs-human"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"messageId\": \"<string>\",\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "066c1d9f-9c9b-4013-95d9-c150b0404501",
+              "name": "Upstream unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "flag-needs-human"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"messageId\": \"<string>\",\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "31d54a93-f40a-4a64-845a-1694873abded",
+          "name": "Post a message to a channel.",
+          "request": {
+            "name": "Post a message to a channel.",
+            "description": {
+              "content": "Write a Message into a channel, optionally threaded under a parent and referencing artifacts. Returns the created message in SDK wire format (snake_case).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "sdk",
+                "post"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"channel_id\": \"<string>\",\n  \"content\": \"<string>\",\n  \"kind\": \"text\",\n  \"parent_message_id\": \"<string>\",\n  \"mention_identity_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"reference_artifact_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"metadata\": {\n    \"key_0\": true,\n    \"key_1\": \"string\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1172113a-f656-481a-ad21-910fab3c2b2f",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sdk",
+                    "post"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channel_id\": \"<string>\",\n  \"content\": \"<string>\",\n  \"kind\": \"text\",\n  \"parent_message_id\": \"<string>\",\n  \"mention_identity_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"reference_artifact_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"metadata\": {\n    \"key_0\": \"string\",\n    \"key_1\": 4061\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"string\",\n    \"channel_id\": \"string\",\n    \"thread_id\": \"string\",\n    \"author_identity_id\": \"string\",\n    \"kind\": \"string\",\n    \"content\": \"string\",\n    \"metadata\": {\n      \"key_0\": 2120,\n      \"key_1\": 5114\n    },\n    \"created_at\": \"1990-03-07T02:34:03.417Z\",\n    \"version\": 5667\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1992-08-05T03:34:19.522Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 8754,\n      \"historyCutoff\": {\n        \"beyondCount\": 9212,\n        \"cutoffAt\": \"1976-10-06T11:45:52.995Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c93ae716-92be-41a8-9de2-94ff923248c3",
+              "name": "Invalid input.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sdk",
+                    "post"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channel_id\": \"<string>\",\n  \"content\": \"<string>\",\n  \"kind\": \"text\",\n  \"parent_message_id\": \"<string>\",\n  \"mention_identity_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"reference_artifact_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"metadata\": {\n    \"key_0\": \"string\",\n    \"key_1\": 4061\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0f492b38-f654-4997-8181-843751a2cd75",
+              "name": "Authentication required.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sdk",
+                    "post"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channel_id\": \"<string>\",\n  \"content\": \"<string>\",\n  \"kind\": \"text\",\n  \"parent_message_id\": \"<string>\",\n  \"mention_identity_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"reference_artifact_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"metadata\": {\n    \"key_0\": \"string\",\n    \"key_1\": 4061\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7a01fb20-cca0-4eba-863a-b0ccd3927403",
+              "name": "Permission denied.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sdk",
+                    "post"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channel_id\": \"<string>\",\n  \"content\": \"<string>\",\n  \"kind\": \"text\",\n  \"parent_message_id\": \"<string>\",\n  \"mention_identity_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"reference_artifact_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"metadata\": {\n    \"key_0\": \"string\",\n    \"key_1\": 4061\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c6cf91d0-48ec-43dc-992c-dfb9431a2785",
+              "name": "Not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sdk",
+                    "post"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channel_id\": \"<string>\",\n  \"content\": \"<string>\",\n  \"kind\": \"text\",\n  \"parent_message_id\": \"<string>\",\n  \"mention_identity_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"reference_artifact_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"metadata\": {\n    \"key_0\": \"string\",\n    \"key_1\": 4061\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c4a020a9-78a6-4378-aefc-ac99fe5501ea",
+              "name": "Conflict (e.g. optimistic-lock version mismatch).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sdk",
+                    "post"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channel_id\": \"<string>\",\n  \"content\": \"<string>\",\n  \"kind\": \"text\",\n  \"parent_message_id\": \"<string>\",\n  \"mention_identity_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"reference_artifact_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"metadata\": {\n    \"key_0\": \"string\",\n    \"key_1\": 4061\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c38d3f3d-2500-4b56-8d8f-9c7c74ebffa2",
+              "name": "Rate limited.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sdk",
+                    "post"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channel_id\": \"<string>\",\n  \"content\": \"<string>\",\n  \"kind\": \"text\",\n  \"parent_message_id\": \"<string>\",\n  \"mention_identity_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"reference_artifact_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"metadata\": {\n    \"key_0\": \"string\",\n    \"key_1\": 4061\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fd07f3bb-1cfd-400f-9f54-6aeb92f1ace8",
+              "name": "Internal error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sdk",
+                    "post"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channel_id\": \"<string>\",\n  \"content\": \"<string>\",\n  \"kind\": \"text\",\n  \"parent_message_id\": \"<string>\",\n  \"mention_identity_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"reference_artifact_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"metadata\": {\n    \"key_0\": \"string\",\n    \"key_1\": 4061\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6a183882-fbb3-4622-a2ee-7f973a79e048",
+              "name": "Upstream unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sdk",
+                    "post"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channel_id\": \"<string>\",\n  \"content\": \"<string>\",\n  \"kind\": \"text\",\n  \"parent_message_id\": \"<string>\",\n  \"mention_identity_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"reference_artifact_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"metadata\": {\n    \"key_0\": \"string\",\n    \"key_1\": 4061\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 4200,\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1948-06-09T11:07:58.997Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 5665,\n      \"historyCutoff\": {\n        \"beyondCount\": 613,\n        \"cutoffAt\": \"2023-07-22T07:47:25.309Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.reload.chat",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "1e523ab5-1c37-45f6-87fa-f8a51709521b",
+    "name": "Reload channels messages API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The public Reload API — exactly the tool set agents call over MCP, exposed as REST and as generated TypeScript + Python SDKs. Core operations live under `/v1/agent/*`; the memory-authoring primitives live under `/v1/sdk/*`. Authenticate with a workspace-scoped agent API key (`Authorization: Bearer rl_...`).",
+      "type": "text/plain"
+    }
+  }
+}

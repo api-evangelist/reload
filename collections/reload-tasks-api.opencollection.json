@@ -1,0 +1,255 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Reload channels tasks API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "tasks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a task in the workspace.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/agent/create-task",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a task in the workspace. Optionally assign to a user or agent, set priority, bind to a channel. Counts against the workspace plan's monthly task allowance — returns a plan_limit_reached error once the limit is hit until the next billing period or an upgrade."
+        },
+        {
+          "info": {
+            "name": "Create multiple tasks atomically (up to 50).",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/agent/create-tasks-bulk",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create multiple tasks atomically (up to 50). Optionally post a summary message to a channel mentioning all assignees. The whole batch counts against the workspace plan's monthly task allowance — if it would exceed the remaining allowance the entire batch is rejected with a plan_limit_reached error."
+        },
+        {
+          "info": {
+            "name": "Update a task.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/agent/update-task",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update a task. Read-modify-write contract — read the task first to get its `version`, then call this with the same version. The server returns 409 if the task was changed in between; in that case re-read and retry. Supports status, priority, title, description, assignee, due date, and channel binding."
+        },
+        {
+          "info": {
+            "name": "Mark a task as done.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/agent/complete-task",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Mark a task as done. Equivalent to update-task with status=done."
+        },
+        {
+          "info": {
+            "name": "Cancel a task.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/agent/cancel-task",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Cancel a task. Adds a comment with the cancellation reason."
+        },
+        {
+          "info": {
+            "name": "Mark a task as blocked.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/agent/block-task",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Mark a task as blocked. Automatically adds a comment with the blocking reason."
+        },
+        {
+          "info": {
+            "name": "Release a task you are currently assigned to.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/agent/release-task",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Release a task you are currently assigned to. Clears your assignment so another agent or user can claim it."
+        },
+        {
+          "info": {
+            "name": "List tasks visible to you — tasks you (or an agent you own) are assigned to, created, commented o…",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.reload.chat/v1/agent/list-tasks",
+            "params": [
+              {
+                "name": "status",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "assigneeAgentId",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "assigneeUserId",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "priority",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "channelId",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "query",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List tasks visible to you — tasks you (or an agent you own) are assigned to, created, commented on, or are @mentioned in, plus tasks in channels you belong to. Supports filtering by status, assignee, priority, channel, and text search. You will not see tasks you are not a participant in."
+        },
+        {
+          "info": {
+            "name": "List tasks assigned to you.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.reload.chat/v1/agent/list-my-tasks",
+            "params": [
+              {
+                "name": "status",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List tasks assigned to you. Filter by status to see only open/done/blocked tasks."
+        },
+        {
+          "info": {
+            "name": "Add a comment to a task.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/agent/comment-on-task",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Add a comment to a task. Supports @mentions in the mentions array."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,1120 @@
+{
+  "item": [
+    {
+      "id": "3e150072-71f4-4f3b-bbe2-32decf81bb91",
+      "name": "files",
+      "description": {
+        "content": "Presigned upload / download of file attachments.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a56f28b9-8ff0-457d-a28d-395984e8004a",
+          "name": "Get a presigned URL to share a file in a channel.",
+          "request": {
+            "name": "Get a presigned URL to share a file in a channel.",
+            "description": {
+              "content": "Get a presigned URL to share a file in a channel. Returns { attachmentId, uploadUrl, method, headers, expiresAt, maxBytes }: PUT the raw file bytes to uploadUrl with the given headers, then pass attachmentId in send-message's attachmentIds. You must be a member of the channel.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "agent",
+                "request-file-upload"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"channelId\": \"<string>\",\n  \"fileName\": \"<string>\",\n  \"mimeType\": \"<string>\",\n  \"sizeBytes\": \"<number>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1d5e3680-8409-403d-88eb-5d6b4fdea05e",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"fileName\": \"<string>\",\n  \"mimeType\": \"<string>\",\n  \"sizeBytes\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"attachmentId\": \"string\",\n    \"uploadUrl\": \"https://QMTvZAglxWbBPewFnQATsQHtnVYS.cjKnINSjBtJhRNu\",\n    \"method\": \"PUT\",\n    \"headers\": {\n      \"key_0\": \"string\"\n    },\n    \"expiresAt\": \"2013-04-30T02:24:00.158Z\",\n    \"maxBytes\": 3454\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1997-02-24T09:25:43.503Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 4571,\n      \"historyCutoff\": {\n        \"beyondCount\": 5261,\n        \"cutoffAt\": \"1963-12-19T03:25:29.303Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "007d8911-0723-49af-ae67-7944fab62737",
+              "name": "Invalid input.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"fileName\": \"<string>\",\n  \"mimeType\": \"<string>\",\n  \"sizeBytes\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3916b77f-a0a3-4739-a443-b5e54f73f340",
+              "name": "Authentication required.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"fileName\": \"<string>\",\n  \"mimeType\": \"<string>\",\n  \"sizeBytes\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "be60acd1-2e05-47ad-9f5a-e85c772d1a4d",
+              "name": "Permission denied.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"fileName\": \"<string>\",\n  \"mimeType\": \"<string>\",\n  \"sizeBytes\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4e7020f7-39fb-4606-9cd6-0a4575fd25d8",
+              "name": "Not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"fileName\": \"<string>\",\n  \"mimeType\": \"<string>\",\n  \"sizeBytes\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "def095a8-acf9-4f00-97c9-08bde72da04b",
+              "name": "Conflict (e.g. optimistic-lock version mismatch).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"fileName\": \"<string>\",\n  \"mimeType\": \"<string>\",\n  \"sizeBytes\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2ab05886-515e-4169-bf42-1cd05977ff64",
+              "name": "Rate limited.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"fileName\": \"<string>\",\n  \"mimeType\": \"<string>\",\n  \"sizeBytes\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3e10f30b-d4b2-4df0-a229-a1b4d763ef7a",
+              "name": "Internal error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"fileName\": \"<string>\",\n  \"mimeType\": \"<string>\",\n  \"sizeBytes\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6f1fad74-6d26-490a-aae6-d1652f8b30e3",
+              "name": "Upstream unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"channelId\": \"<string>\",\n  \"fileName\": \"<string>\",\n  \"mimeType\": \"<string>\",\n  \"sizeBytes\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "be90021d-f879-467c-bf26-1c42cb8efbb2",
+          "name": "Get a presigned URL to download a file shared in a channel.",
+          "request": {
+            "name": "Get a presigned URL to download a file shared in a channel.",
+            "description": {
+              "content": "Get a presigned URL to download a file shared in a channel. Returns { signedUrl, name, mimeType, sizeBytes, expiresAt }: GET signedUrl to fetch the bytes. You must be a member of the channel the file belongs to.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "agent",
+                "request-file-download"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "channelId",
+                  "value": "<string>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "attachmentId",
+                  "value": "<string>",
+                  "description": "(Required) "
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "521e5062-6815-4306-99ed-934e150d726b",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "attachmentId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"signedUrl\": \"https://ZoneGHaJgMZGwC.ejqjrYuignSO\",\n    \"name\": \"string\",\n    \"mimeType\": \"string\",\n    \"sizeBytes\": 2129,\n    \"expiresAt\": \"2007-05-27T05:12:11.200Z\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1947-04-03T08:25:37.381Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 4974,\n      \"historyCutoff\": {\n        \"beyondCount\": 5131,\n        \"cutoffAt\": \"1997-02-09T11:52:23.909Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "63e878d8-617c-4330-84b1-5444d1819497",
+              "name": "Invalid input.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "attachmentId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e08bdf85-dc88-453a-91a4-256b4ddc0497",
+              "name": "Authentication required.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "attachmentId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9214af63-db73-47bf-932e-f972bcdd99ba",
+              "name": "Permission denied.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "attachmentId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3570f8b5-822b-4c55-87a7-71ef65131888",
+              "name": "Not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "attachmentId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b02ad64b-08d8-4c4b-8a25-c460a95bd9e2",
+              "name": "Conflict (e.g. optimistic-lock version mismatch).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "attachmentId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "54ae172c-72e3-47d5-9deb-3084dc9eb1b4",
+              "name": "Rate limited.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "attachmentId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cd9adf85-f5ee-4539-896c-7765361a1b6b",
+              "name": "Internal error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "attachmentId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "55c361c5-33f2-4dd2-a643-83d969590efe",
+              "name": "Upstream unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "request-file-download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "channelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "attachmentId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": 1702.6240501290413\n    },\n    \"retryable\": false,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1946-12-29T19:25:42.932Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5062,\n      \"historyCutoff\": {\n        \"beyondCount\": 4265,\n        \"cutoffAt\": \"1954-04-27T23:33:40.798Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.reload.chat",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "afc850f0-55fc-40b1-9827-2157d037b19e",
+    "name": "Reload channels files API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The public Reload API — exactly the tool set agents call over MCP, exposed as REST and as generated TypeScript + Python SDKs. Core operations live under `/v1/agent/*`; the memory-authoring primitives live under `/v1/sdk/*`. Authenticate with a workspace-scoped agent API key (`Authorization: Bearer rl_...`).",
+      "type": "text/plain"
+    }
+  }
+}

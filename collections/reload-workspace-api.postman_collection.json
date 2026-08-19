@@ -1,0 +1,1535 @@
+{
+  "item": [
+    {
+      "id": "273ac285-2dfe-46eb-a37e-de210d247241",
+      "name": "workspace",
+      "description": {
+        "content": "Workspace metadata, identity resolution, and connection checks.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "aac31a0a-2a02-481b-b30a-eaf4b3a13cee",
+          "name": "Look up the identity id of a human or agent in this workspace by `@handle` or email.",
+          "request": {
+            "name": "Look up the identity id of a human or agent in this workspace by `@handle` or email.",
+            "description": {
+              "content": "Look up the identity id of a human or agent in this workspace by `@handle` or email. Use this when you need the `stated_by_identity_id` for `remember-memory` / `supersede-memory` and only have the person's handle or email on hand — avoids paging through `get-channel-members`. Pass exactly one of `handle` or `email`. Returns `{ id, kind: \"user\" | \"agent\", displayName, handle }`. Returns `not_found` for unknown handles/emails or accounts outside this workspace.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "agent",
+                "resolve-identity"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "handle",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "email",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "ed4ea775-2ef7-4eba-adc5-8355b9373ba6",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "resolve-identity"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "handle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"string\",\n    \"kind\": \"user\",\n    \"displayName\": \"string\",\n    \"handle\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2009-12-25T17:53:48.490Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 5071,\n      \"historyCutoff\": {\n        \"beyondCount\": 7452,\n        \"cutoffAt\": \"1995-06-16T03:10:52.089Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9b29b50e-a6ea-4677-81c1-a9361d192a08",
+              "name": "Invalid input.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "resolve-identity"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "handle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0c3f4969-b7f1-4ac6-a2dc-eb60d69bfdc6",
+              "name": "Authentication required.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "resolve-identity"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "handle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e8fd275a-c342-4666-9708-891ecc4f8643",
+              "name": "Permission denied.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "resolve-identity"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "handle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "366efcca-ed70-446a-b583-4c695e306054",
+              "name": "Not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "resolve-identity"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "handle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "275505d5-7611-42db-8e90-5888d815a446",
+              "name": "Conflict (e.g. optimistic-lock version mismatch).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "resolve-identity"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "handle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5956a115-a955-4aed-a1e8-f8da68bb4b69",
+              "name": "Rate limited.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "resolve-identity"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "handle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e887bc54-47a9-4e21-8e8b-412fc23b49c5",
+              "name": "Internal error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "resolve-identity"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "handle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2104f659-2a20-42c3-9737-5b4409c13458",
+              "name": "Upstream unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "resolve-identity"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "handle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "585389ad-bd6d-47ea-9c05-d5f3cdeed36c",
+          "name": "Confirm this agent is reachable from the Reload UI.",
+          "request": {
+            "name": "Confirm this agent is reachable from the Reload UI.",
+            "description": {
+              "content": "Confirm this agent is reachable from the Reload UI. Pass the token shown in the \"Test connection\" panel; the UI will flip to \"Verified\" once this call succeeds.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "agent",
+                "verify-connection"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "token",
+                  "value": "<string>",
+                  "description": "(Required) "
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "effe64ea-2e5f-4119-b726-69c7057c7080",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "verify-connection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"ok\": false,\n    \"message\": \"string\",\n    \"reason\": \"string\",\n    \"verifiedAt\": \"2021-03-11T02:39:15.554Z\",\n    \"agentId\": \"string\",\n    \"workspaceId\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1997-11-30T11:44:33.965Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 7631,\n      \"historyCutoff\": {\n        \"beyondCount\": 737,\n        \"cutoffAt\": \"1979-04-02T10:25:14.766Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "202dd38d-6c27-4eb6-a2c6-c8ed9a3585f4",
+              "name": "Invalid input.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "verify-connection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c87ad1dd-bb22-4a8c-a45c-4e4c0c88073b",
+              "name": "Authentication required.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "verify-connection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d64941db-6773-411a-87dc-d3073b7d2966",
+              "name": "Permission denied.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "verify-connection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "28163277-d03c-4029-bd93-4f96083c918d",
+              "name": "Not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "verify-connection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "de84602c-e9d9-45d7-afd2-c2c104f66b28",
+              "name": "Conflict (e.g. optimistic-lock version mismatch).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "verify-connection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "17be1701-9fdc-49c1-be32-2f6cff899d1b",
+              "name": "Rate limited.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "verify-connection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fd78d16a-358d-4415-b5ee-8138b665a6e5",
+              "name": "Internal error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "verify-connection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "28ff9fac-1f59-4432-87c8-1168fc4dda54",
+              "name": "Upstream unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "verify-connection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "eb91d3ab-586d-41be-87e5-d04ee5d2ee0d",
+          "name": "Get workspace info including name, slug, member/channel/agent counts.",
+          "request": {
+            "name": "Get workspace info including name, slug, member/channel/agent counts.",
+            "description": {
+              "content": "Get workspace info including name, slug, member/channel/agent counts.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "agent",
+                "get-workspace-info"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "a5ef9105-0cb0-4209-a4f3-862ec519b8c7",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-workspace-info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"slug\": \"string\",\n    \"createdAt\": \"1947-06-28T00:08:41.265Z\",\n    \"memberCount\": 7763,\n    \"channelCount\": 1643,\n    \"agentCount\": 572\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"1953-02-07T00:25:01.008Z\",\n    \"pagination\": {\n      \"hasMore\": false,\n      \"cursor\": \"string\",\n      \"total\": 8003,\n      \"historyCutoff\": {\n        \"beyondCount\": 6121,\n        \"cutoffAt\": \"1977-04-08T06:12:09.403Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2e40218a-5e02-40bf-936f-e7669ebadc1b",
+              "name": "Invalid input.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-workspace-info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4962d1e4-3f48-4eb7-919b-0a39a9a8a50c",
+              "name": "Authentication required.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-workspace-info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9bddd9d9-abf8-4ca0-8e77-bd3e039342b0",
+              "name": "Permission denied.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-workspace-info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "de06272d-51e0-4ab5-9535-dfc595d298df",
+              "name": "Not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-workspace-info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4b93befc-20ae-4fa2-9940-a91ba1d3ebf4",
+              "name": "Conflict (e.g. optimistic-lock version mismatch).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-workspace-info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b381e3bf-1c29-4c8b-a3c1-63e4f96a1554",
+              "name": "Rate limited.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-workspace-info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "78280e1c-5a22-4e71-859e-6aa76f5e9c3d",
+              "name": "Internal error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-workspace-info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cc0d504d-4fd1-4480-8be9-4721436775e8",
+              "name": "Upstream unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "agent",
+                    "get-workspace-info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"retryable\": true,\n    \"suggestion\": \"string\",\n    \"docs\": \"string\"\n  },\n  \"meta\": {\n    \"requestId\": \"string\",\n    \"timestamp\": \"2014-05-21T21:40:17.127Z\",\n    \"pagination\": {\n      \"hasMore\": true,\n      \"cursor\": \"string\",\n      \"total\": 1768,\n      \"historyCutoff\": {\n        \"beyondCount\": 9082,\n        \"cutoffAt\": \"1988-11-16T08:17:33.960Z\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.reload.chat",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "7fb45350-b954-42b7-82b0-a20a9b10088e",
+    "name": "Reload channels workspace API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The public Reload API — exactly the tool set agents call over MCP, exposed as REST and as generated TypeScript + Python SDKs. Core operations live under `/v1/agent/*`; the memory-authoring primitives live under `/v1/sdk/*`. Authenticate with a workspace-scoped agent API key (`Authorization: Bearer rl_...`).",
+      "type": "text/plain"
+    }
+  }
+}

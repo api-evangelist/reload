@@ -1,0 +1,238 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Reload channels memory API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "memory",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Structured filter over the workspace context graph (Memory nodes).",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.reload.chat/v1/agent/search-memories",
+            "params": [
+              {
+                "name": "kind",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "tags",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "scope_id",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Structured filter over the workspace context graph (Memory nodes). Filter by kind / status / tags / date range / scope. Pair with recall for semantic ANN. Bounded by scope-membership ACL."
+        },
+        {
+          "info": {
+            "name": "Capture a Memory with provenance.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/sdk/remember",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Author a Memory (decision / fact / preference) into a scope. Requires ≥1 `derived_from` provenance pointer — a memory without provenance is a hallucination with metadata."
+        },
+        {
+          "info": {
+            "name": "Replace a Memory (optimistic-locked).",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/sdk/supersede",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Supersede an existing Memory with a new version. `expected_version` guards against concurrent writes — a mismatch returns 409 VERSION_CONFLICT."
+        },
+        {
+          "info": {
+            "name": "Retract a Memory.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/sdk/invalidate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Mark a Memory invalidated with a reason. Optimistic-locked via `expected_version`. Reversible with revalidate-memory."
+        },
+        {
+          "info": {
+            "name": "Undo a prior invalidate.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/sdk/revalidate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Revert an invalidated Memory back to current. Optimistic-locked via `expected_version`."
+        },
+        {
+          "info": {
+            "name": "Create a typed edge between two nodes.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/sdk/link",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a typed edge in the context graph. Pass `to_type` explicitly when linking to a non-Memory node, or the edge silently lands as Memory→Memory."
+        },
+        {
+          "info": {
+            "name": "Assert two Memories contradict.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/sdk/flag-contradiction",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Record a CONTRADICTS edge between two Memories with an explanatory note."
+        },
+        {
+          "info": {
+            "name": "Recall memories semantically or by neighborhood walk.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/sdk/recall",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve a ranked subgraph. Provide exactly one of `query` (semantic ANN) or `seed_id` (BFS neighborhood walk). Returns flat hits, the edges linking them, ranking scores, and provenance messages."
+        },
+        {
+          "info": {
+            "name": "Load an agent’s starting context.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/sdk/bootstrap-context",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return the current decisions, active constraints, open questions, scope membership, and a recent-activity summary for an agent identity — the orientation payload an agent loads at the start of a session."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

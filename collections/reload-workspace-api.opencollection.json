@@ -1,0 +1,88 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Reload channels workspace API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "workspace",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Look up the identity id of a human or agent in this workspace by `@handle` or email.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.reload.chat/v1/agent/resolve-identity",
+            "params": [
+              {
+                "name": "handle",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "email",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Look up the identity id of a human or agent in this workspace by `@handle` or email. Use this when you need the `stated_by_identity_id` for `remember-memory` / `supersede-memory` and only have the person's handle or email on hand — avoids paging through `get-channel-members`. Pass exactly one of `handle` or `email`. Returns `{ id, kind: \"user\" | \"agent\", displayName, handle }`. Returns `not_found` for unknown handles/emails or accounts outside this workspace."
+        },
+        {
+          "info": {
+            "name": "Confirm this agent is reachable from the Reload UI.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.reload.chat/v1/agent/verify-connection",
+            "params": [
+              {
+                "name": "token",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Confirm this agent is reachable from the Reload UI. Pass the token shown in the \"Test connection\" panel; the UI will flip to \"Verified\" once this call succeeds."
+        },
+        {
+          "info": {
+            "name": "Get workspace info including name, slug, member/channel/agent counts.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.reload.chat/v1/agent/get-workspace-info",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get workspace info including name, slug, member/channel/agent counts."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

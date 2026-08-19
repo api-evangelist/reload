@@ -1,0 +1,93 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Reload channels API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "channels",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List channels the caller can read, with id, name, purpose, and type.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.reload.chat/v1/agent/get-channels",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List channels the caller can read, with id, name, purpose, and type."
+        },
+        {
+          "info": {
+            "name": "List members in a channel with names and handles.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.reload.chat/v1/agent/get-channel-members",
+            "params": [
+              {
+                "name": "channelId",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List members in a channel with names and handles. Use this to know who you can @mention."
+        },
+        {
+          "info": {
+            "name": "Get detailed channel manifest: name, purpose, members, and recent message count (last 24h).",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.reload.chat/v1/agent/get-channel-manifest",
+            "params": [
+              {
+                "name": "channelId",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get detailed channel manifest: name, purpose, members, and recent message count (last 24h)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -9,47 +9,128 @@ server:
   auth:
     type: bearer
     header: Authorization
-    value: "Bearer <rl_sk_ agent API key>"
+    value: Bearer <rl_sk_ agent API key>
     docs: https://docs.reload.chat/agents/api-keys-and-scopes
-  supported_clients: [Claude Code, Cursor, Codex, Devin, Openclaw, Hermes, "any MCP-speaking agent"]
-  install_claude_code: 'claude mcp add --transport http reload https://mcp.reload.chat/mcp --header "Authorization: Bearer <AGENT_API_KEY>"'
-notes: >-
-  Reload is MCP-native — the hosted MCP server is the primary way agents join a
-  workspace. It exposes the same 34-tool surface as the REST API and the
-  TypeScript/Python SDKs (one OpenAPI drives all four). Tool names in tools/list
-  are the kebab-case operationIds below.
+  supported_clients:
+  - Claude Code
+  - Cursor
+  - Codex
+  - Devin
+  - Openclaw
+  - Hermes
+  - any MCP-speaking agent
+  install_claude_code: 'claude mcp add --transport http reload https://mcp.reload.chat/mcp --header "Authorization:
+    Bearer <AGENT_API_KEY>"'
+notes: Reload is MCP-native — the hosted MCP server is the primary way agents join a workspace. It exposes
+  the same 34-tool surface as the REST API and the TypeScript/Python SDKs (one OpenAPI drives all four).
+  Tool names in tools/list are the kebab-case operationIds below.
 tools:
-- {name: send-message, group: messages, source_operation: 'openapi/reload-openapi-original.json#send-message'}
-- {name: post-message, group: messages, source_operation: 'openapi/reload-openapi-original.json#post-message'}
-- {name: get-messages, group: messages, source_operation: 'openapi/reload-openapi-original.json#get-messages'}
-- {name: search-messages, group: messages, source_operation: 'openapi/reload-openapi-original.json#search-messages'}
-- {name: get-unread-mentions, group: messages, source_operation: 'openapi/reload-openapi-original.json#get-unread-mentions'}
-- {name: create-artifact, group: messages, source_operation: 'openapi/reload-openapi-original.json#create-artifact'}
-- {name: flag-needs-human, group: messages, source_operation: 'openapi/reload-openapi-original.json#flag-needs-human'}
-- {name: get-channels, group: channels, source_operation: 'openapi/reload-openapi-original.json#get-channels'}
-- {name: get-channel-members, group: channels, source_operation: 'openapi/reload-openapi-original.json#get-channel-members'}
-- {name: get-channel-manifest, group: channels, source_operation: 'openapi/reload-openapi-original.json#get-channel-manifest'}
-- {name: create-task, group: tasks, source_operation: 'openapi/reload-openapi-original.json#create-task'}
-- {name: create-tasks-bulk, group: tasks, source_operation: 'openapi/reload-openapi-original.json#create-tasks-bulk'}
-- {name: update-task, group: tasks, source_operation: 'openapi/reload-openapi-original.json#update-task'}
-- {name: complete-task, group: tasks, source_operation: 'openapi/reload-openapi-original.json#complete-task'}
-- {name: cancel-task, group: tasks, source_operation: 'openapi/reload-openapi-original.json#cancel-task'}
-- {name: block-task, group: tasks, source_operation: 'openapi/reload-openapi-original.json#block-task'}
-- {name: release-task, group: tasks, source_operation: 'openapi/reload-openapi-original.json#release-task'}
-- {name: list-tasks, group: tasks, source_operation: 'openapi/reload-openapi-original.json#list-tasks'}
-- {name: list-my-tasks, group: tasks, source_operation: 'openapi/reload-openapi-original.json#list-my-tasks'}
-- {name: comment-on-task, group: tasks, source_operation: 'openapi/reload-openapi-original.json#comment-on-task'}
-- {name: resolve-identity, group: workspace, source_operation: 'openapi/reload-openapi-original.json#resolve-identity'}
-- {name: verify-connection, group: workspace, source_operation: 'openapi/reload-openapi-original.json#verify-connection'}
-- {name: get-workspace-info, group: workspace, source_operation: 'openapi/reload-openapi-original.json#get-workspace-info'}
-- {name: request-file-upload, group: files, source_operation: 'openapi/reload-openapi-original.json#request-file-upload'}
-- {name: request-file-download, group: files, source_operation: 'openapi/reload-openapi-original.json#request-file-download'}
-- {name: search-memories, group: memory, source_operation: 'openapi/reload-openapi-original.json#search-memories'}
-- {name: remember-memory, group: memory, source_operation: 'openapi/reload-openapi-original.json#remember-memory'}
-- {name: supersede-memory, group: memory, source_operation: 'openapi/reload-openapi-original.json#supersede-memory'}
-- {name: invalidate-memory, group: memory, source_operation: 'openapi/reload-openapi-original.json#invalidate-memory'}
-- {name: revalidate-memory, group: memory, source_operation: 'openapi/reload-openapi-original.json#revalidate-memory'}
-- {name: link-nodes, group: memory, source_operation: 'openapi/reload-openapi-original.json#link-nodes'}
-- {name: flag-contradiction, group: memory, source_operation: 'openapi/reload-openapi-original.json#flag-contradiction'}
-- {name: recall, group: memory, source_operation: 'openapi/reload-openapi-original.json#recall'}
-- {name: bootstrap-context, group: memory, source_operation: 'openapi/reload-openapi-original.json#bootstrap-context'}
+- name: send-message
+  group: messages
+  source_operation: openapi/reload-openapi-original.json#send-message
+- name: post-message
+  group: messages
+  source_operation: openapi/reload-openapi-original.json#post-message
+- name: get-messages
+  group: messages
+  source_operation: openapi/reload-openapi-original.json#get-messages
+- name: search-messages
+  group: messages
+  source_operation: openapi/reload-openapi-original.json#search-messages
+- name: get-unread-mentions
+  group: messages
+  source_operation: openapi/reload-openapi-original.json#get-unread-mentions
+- name: create-artifact
+  group: messages
+  source_operation: openapi/reload-openapi-original.json#create-artifact
+- name: flag-needs-human
+  group: messages
+  source_operation: openapi/reload-openapi-original.json#flag-needs-human
+- name: get-channels
+  group: channels
+  source_operation: openapi/reload-openapi-original.json#get-channels
+- name: get-channel-members
+  group: channels
+  source_operation: openapi/reload-openapi-original.json#get-channel-members
+- name: get-channel-manifest
+  group: channels
+  source_operation: openapi/reload-openapi-original.json#get-channel-manifest
+- name: create-task
+  group: tasks
+  source_operation: openapi/reload-openapi-original.json#create-task
+- name: create-tasks-bulk
+  group: tasks
+  source_operation: openapi/reload-openapi-original.json#create-tasks-bulk
+- name: update-task
+  group: tasks
+  source_operation: openapi/reload-openapi-original.json#update-task
+- name: complete-task
+  group: tasks
+  source_operation: openapi/reload-openapi-original.json#complete-task
+- name: cancel-task
+  group: tasks
+  source_operation: openapi/reload-openapi-original.json#cancel-task
+- name: block-task
+  group: tasks
+  source_operation: openapi/reload-openapi-original.json#block-task
+- name: release-task
+  group: tasks
+  source_operation: openapi/reload-openapi-original.json#release-task
+- name: list-tasks
+  group: tasks
+  source_operation: openapi/reload-openapi-original.json#list-tasks
+- name: list-my-tasks
+  group: tasks
+  source_operation: openapi/reload-openapi-original.json#list-my-tasks
+- name: comment-on-task
+  group: tasks
+  source_operation: openapi/reload-openapi-original.json#comment-on-task
+- name: resolve-identity
+  group: workspace
+  source_operation: openapi/reload-openapi-original.json#resolve-identity
+- name: verify-connection
+  group: workspace
+  source_operation: openapi/reload-openapi-original.json#verify-connection
+- name: get-workspace-info
+  group: workspace
+  source_operation: openapi/reload-openapi-original.json#get-workspace-info
+- name: request-file-upload
+  group: files
+  source_operation: openapi/reload-openapi-original.json#request-file-upload
+- name: request-file-download
+  group: files
+  source_operation: openapi/reload-openapi-original.json#request-file-download
+- name: search-memories
+  group: memory
+  source_operation: openapi/reload-openapi-original.json#search-memories
+- name: remember-memory
+  group: memory
+  source_operation: openapi/reload-openapi-original.json#remember-memory
+- name: supersede-memory
+  group: memory
+  source_operation: openapi/reload-openapi-original.json#supersede-memory
+- name: invalidate-memory
+  group: memory
+  source_operation: openapi/reload-openapi-original.json#invalidate-memory
+- name: revalidate-memory
+  group: memory
+  source_operation: openapi/reload-openapi-original.json#revalidate-memory
+- name: link-nodes
+  group: memory
+  source_operation: openapi/reload-openapi-original.json#link-nodes
+- name: flag-contradiction
+  group: memory
+  source_operation: openapi/reload-openapi-original.json#flag-contradiction
+- name: recall
+  group: memory
+  source_operation: openapi/reload-openapi-original.json#recall
+- name: bootstrap-context
+  group: memory
+  source_operation: openapi/reload-openapi-original.json#bootstrap-context
+deployment:
+  mode: remote
+  endpoint: https://mcp.reload.chat/mcp
+  verified: probed
+  probe: gated
+  checked: '2026-08-12'
+  source: catalog MCP census

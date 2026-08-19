@@ -1,0 +1,70 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Reload channels files API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "files",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a presigned URL to share a file in a channel.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.reload.chat/v1/agent/request-file-upload",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get a presigned URL to share a file in a channel. Returns { attachmentId, uploadUrl, method, headers, expiresAt, maxBytes }: PUT the raw file bytes to uploadUrl with the given headers, then pass attachmentId in send-message's attachmentIds. You must be a member of the channel."
+        },
+        {
+          "info": {
+            "name": "Get a presigned URL to download a file shared in a channel.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.reload.chat/v1/agent/request-file-download",
+            "params": [
+              {
+                "name": "channelId",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "attachmentId",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get a presigned URL to download a file shared in a channel. Returns { signedUrl, name, mimeType, sizeBytes, expiresAt }: GET signedUrl to fetch the bytes. You must be a member of the channel the file belongs to."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
