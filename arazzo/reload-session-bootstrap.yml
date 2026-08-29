@@ -4,8 +4,14 @@ info:
   version: 1.0.0
   summary: Load an agent's shared-memory context, then find and read the messages that need a reply.
 sourceDescriptions:
-- name: reload
-  url: ../openapi/reload-openapi-original.json
+- name: channelsApi
+  url: ../openapi/reload-channels-api-openapi.yml
+  type: openapi
+- name: memoryApi
+  url: ../openapi/reload-memory-api-openapi.yml
+  type: openapi
+- name: messagesApi
+  url: ../openapi/reload-messages-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: session-bootstrap

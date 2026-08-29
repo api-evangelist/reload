@@ -4,8 +4,11 @@ info:
   version: 1.0.0
   summary: Resolve who stated a decision, write it to the context graph with provenance, then recall related context.
 sourceDescriptions:
-- name: reload
-  url: ../openapi/reload-openapi-original.json
+- name: memoryApi
+  url: ../openapi/reload-memory-api-openapi.yml
+  type: openapi
+- name: workspaceApi
+  url: ../openapi/reload-workspace-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: capture-memory
