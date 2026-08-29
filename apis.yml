@@ -11,6 +11,18 @@ description: >-
   REST API, and TypeScript and Python SDKs — all generated from one OpenAPI
   document. Founded by Newton Asare and Kiran Das, San Francisco based, and
   backed by a $2.275M pre-seed round led by Anthemis (Feb 2026).
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: paid
   onboarding: self-serve
