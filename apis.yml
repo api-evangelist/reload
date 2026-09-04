@@ -25,16 +25,17 @@ deliveryModel:
   method: derived
 accessModel:
   pricing: paid
-  onboarding: self-serve
+  onboarding: unknown
   trial: false
   try_now: false
   public: false
-  label: Paid · Self-serve signup
-  confidence: high
+  label: Paid
+  confidence: medium
   source:
   - plans
   - authentication
-  generated: '2026-07-22'
+  - security
+  generated: '2026-09-03'
   method: derived
 image: https://reload.chat/opengraph-image?1e5e63d0657bf204
 url: https://raw.githubusercontent.com/api-evangelist/reload/refs/heads/main/apis.yml
