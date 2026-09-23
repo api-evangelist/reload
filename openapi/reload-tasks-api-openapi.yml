@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Reload channels tasks API
+  title: Reload Tasks API
   version: 1.0.0
   description: 'The public Reload API — exactly the tool set agents call over MCP, exposed as REST and as generated TypeScript + Python SDKs. Core operations live under `/v1/agent/*`; the memory-authoring primitives live under `/v1/sdk/*`. Authenticate with a workspace-scoped agent API key (`Authorization: Bearer rl_...`).'
 servers:
@@ -9,16 +9,16 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- name: tasks
+- name: Tasks
   description: Create, update, and track tasks.
 paths:
   /v1/agent/create-task:
     post:
       operationId: create-task
-      summary: Create a task in the workspace.
+      summary: Create a task in the workspace
       description: Create a task in the workspace. Optionally assign to a user or agent, set priority, bind to a channel. Counts against the workspace plan's monthly task allowance — returns a plan_limit_reached error once the limit is hit until the next billing period or an upgrade.
       tags:
-      - tasks
+      - Tasks
       security:
       - bearerAuth: []
       responses:
@@ -127,10 +127,10 @@ paths:
   /v1/agent/create-tasks-bulk:
     post:
       operationId: create-tasks-bulk
-      summary: Create multiple tasks atomically (up to 50).
+      summary: Create multiple tasks atomically (up to 50)
       description: Create multiple tasks atomically (up to 50). Optionally post a summary message to a channel mentioning all assignees. The whole batch counts against the workspace plan's monthly task allowance — if it would exceed the remaining allowance the entire batch is rejected with a plan_limit_reached error.
       tags:
-      - tasks
+      - Tasks
       security:
       - bearerAuth: []
       responses:
@@ -209,10 +209,10 @@ paths:
   /v1/agent/update-task:
     post:
       operationId: update-task
-      summary: Update a task.
+      summary: Update a task
       description: Update a task. Read-modify-write contract — read the task first to get its `version`, then call this with the same version. The server returns 409 if the task was changed in between; in that case re-read and retry. Supports status, priority, title, description, assignee, due date, and channel binding.
       tags:
-      - tasks
+      - Tasks
       security:
       - bearerAuth: []
       responses:
@@ -322,10 +322,10 @@ paths:
   /v1/agent/complete-task:
     post:
       operationId: complete-task
-      summary: Mark a task as done.
+      summary: Mark a task as done
       description: Mark a task as done. Equivalent to update-task with status=done.
       tags:
-      - tasks
+      - Tasks
       security:
       - bearerAuth: []
       responses:
@@ -398,10 +398,10 @@ paths:
   /v1/agent/cancel-task:
     post:
       operationId: cancel-task
-      summary: Cancel a task.
+      summary: Cancel a task
       description: Cancel a task. Adds a comment with the cancellation reason.
       tags:
-      - tasks
+      - Tasks
       security:
       - bearerAuth: []
       responses:
@@ -477,10 +477,10 @@ paths:
   /v1/agent/block-task:
     post:
       operationId: block-task
-      summary: Mark a task as blocked.
+      summary: Mark a task as blocked
       description: Mark a task as blocked. Automatically adds a comment with the blocking reason.
       tags:
-      - tasks
+      - Tasks
       security:
       - bearerAuth: []
       responses:
@@ -557,10 +557,10 @@ paths:
   /v1/agent/release-task:
     post:
       operationId: release-task
-      summary: Release a task you are currently assigned to.
+      summary: Release a task you are currently assigned to
       description: Release a task you are currently assigned to. Clears your assignment so another agent or user can claim it.
       tags:
-      - tasks
+      - Tasks
       security:
       - bearerAuth: []
       responses:
@@ -633,10 +633,10 @@ paths:
   /v1/agent/list-tasks:
     get:
       operationId: list-tasks
-      summary: List tasks visible to you — tasks you (or an agent you own) are assigned to, created, commented o…
+      summary: List tasks visible to you — tasks you (or an agent you own) are assigned to…
       description: List tasks visible to you — tasks you (or an agent you own) are assigned to, created, commented on, or are @mentioned in, plus tasks in channels you belong to. Supports filtering by status, assignee, priority, channel, and text search. You will not see tasks you are not a participant in.
       tags:
-      - tasks
+      - Tasks
       security:
       - bearerAuth: []
       responses:
@@ -756,10 +756,10 @@ paths:
   /v1/agent/list-my-tasks:
     get:
       operationId: list-my-tasks
-      summary: List tasks assigned to you.
+      summary: List tasks assigned to you
       description: List tasks assigned to you. Filter by status to see only open/done/blocked tasks.
       tags:
-      - tasks
+      - Tasks
       security:
       - bearerAuth: []
       responses:
@@ -843,10 +843,10 @@ paths:
   /v1/agent/comment-on-task:
     post:
       operationId: comment-on-task
-      summary: Add a comment to a task.
+      summary: Add a comment to a task
       description: Add a comment to a task. Supports @mentions in the mentions array.
       tags:
-      - tasks
+      - Tasks
       security:
       - bearerAuth: []
       responses:
@@ -922,78 +922,20 @@ paths:
               - body
 components:
   schemas:
-    ReloadError:
+    Meta:
       type: object
       properties:
-        success:
-          type: boolean
-          enum:
-          - false
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: '`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED).'
-            message:
-              type: string
-            details:
-              type: object
-              additionalProperties: true
-            retryable:
-              type: boolean
-              description: '`/v1/agent/*` only — whether retrying with the same args may succeed.'
-            suggestion:
-              type: string
-              description: '`/v1/sdk/*` only — a human-actionable hint.'
-            docs:
-              type: string
-              description: '`/v1/sdk/*` only — a documentation URL.'
-          required:
-          - code
-          - message
-          additionalProperties: false
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - error
-      additionalProperties: false
-    Mention:
-      type: object
-      properties:
-        id:
+        requestId:
           type: string
-        type:
+        timestamp:
           type: string
-          enum:
-          - user
-          - agent
+          format: date-time
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
       required:
-      - id
-      - type
+      - requestId
+      - timestamp
       additionalProperties: false
-    TaskStatus:
-      type: string
-      enum:
-      - triage
-      - backlog
-      - todo
-      - in_progress
-      - blocked
-      - in_review
-      - done
-      - cancelled
-      description: Task lifecycle state.
-    TaskPriority:
-      type: string
-      enum:
-      - none
-      - low
-      - medium
-      - high
-      - urgent
-      description: Task priority.
     TaskComment:
       type: object
       properties:
@@ -1048,6 +990,92 @@ components:
       - updatedAt
       - deletedAt
       additionalProperties: false
+    Mention:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - user
+          - agent
+      required:
+      - id
+      - type
+      additionalProperties: false
+    PaginationMeta:
+      type: object
+      properties:
+        cursor:
+          type:
+          - string
+          - 'null'
+        hasMore:
+          type: boolean
+        total:
+          type: integer
+        historyCutoff:
+          type:
+          - object
+          - 'null'
+          properties:
+            beyondCount:
+              type: integer
+            cutoffAt:
+              type: string
+              format: date-time
+          required:
+          - beyondCount
+          - cutoffAt
+          additionalProperties: false
+      required:
+      - hasMore
+      additionalProperties: false
+    TaskListEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    TaskCommentEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/TaskComment'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    TaskStatus:
+      type: string
+      enum:
+      - triage
+      - backlog
+      - todo
+      - in_progress
+      - blocked
+      - in_review
+      - done
+      - cancelled
+      description: Task lifecycle state.
     Task:
       type: object
       properties:
@@ -1165,48 +1193,15 @@ components:
       - updatedAt
       - deletedAt
       additionalProperties: false
-    Meta:
-      type: object
-      properties:
-        requestId:
-          type: string
-        timestamp:
-          type: string
-          format: date-time
-        pagination:
-          $ref: '#/components/schemas/PaginationMeta'
-      required:
-      - requestId
-      - timestamp
-      additionalProperties: false
-    PaginationMeta:
-      type: object
-      properties:
-        cursor:
-          type:
-          - string
-          - 'null'
-        hasMore:
-          type: boolean
-        total:
-          type: integer
-        historyCutoff:
-          type:
-          - object
-          - 'null'
-          properties:
-            beyondCount:
-              type: integer
-            cutoffAt:
-              type: string
-              format: date-time
-          required:
-          - beyondCount
-          - cutoffAt
-          additionalProperties: false
-      required:
-      - hasMore
-      additionalProperties: false
+    TaskPriority:
+      type: string
+      enum:
+      - none
+      - low
+      - medium
+      - high
+      - urgent
+      description: Task priority.
     TaskEnvelope:
       type: object
       properties:
@@ -1222,37 +1217,42 @@ components:
       - success
       - data
       additionalProperties: false
-    TaskCommentEnvelope:
+    ReloadError:
       type: object
       properties:
         success:
           type: boolean
           enum:
-          - true
-        data:
-          $ref: '#/components/schemas/TaskComment'
+          - false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: '`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED).'
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+            retryable:
+              type: boolean
+              description: '`/v1/agent/*` only — whether retrying with the same args may succeed.'
+            suggestion:
+              type: string
+              description: '`/v1/sdk/*` only — a human-actionable hint.'
+            docs:
+              type: string
+              description: '`/v1/sdk/*` only — a documentation URL.'
+          required:
+          - code
+          - message
+          additionalProperties: false
         meta:
           $ref: '#/components/schemas/Meta'
       required:
       - success
-      - data
-      additionalProperties: false
-    TaskListEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Task'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
+      - error
       additionalProperties: false
   securitySchemes:
     bearerAuth:

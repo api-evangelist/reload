@@ -1,0 +1,27 @@
+# Front Door AI Index — reload — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: reload
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: reload.team
+  final_host: reload.work
+  ownership: own
+  owner: reload
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 11
+  host_score: 11
+  density: 8.37
+  words: 1314
+  tiers:
+    agentic: 5
+    core: 6
+    model: 0
+  ambiguous: 40
+  top_terms:
+    agent: 40
+    AI: 6
+    AI agent: 5

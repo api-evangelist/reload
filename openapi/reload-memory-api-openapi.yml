@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Reload channels memory API
+  title: Reload Memory API
   version: 1.0.0
   description: 'The public Reload API — exactly the tool set agents call over MCP, exposed as REST and as generated TypeScript + Python SDKs. Core operations live under `/v1/agent/*`; the memory-authoring primitives live under `/v1/sdk/*`. Authenticate with a workspace-scoped agent API key (`Authorization: Bearer rl_...`).'
 servers:
@@ -9,16 +9,16 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- name: memory
+- name: Memory
   description: Author and recall the workspace context graph.
 paths:
   /v1/agent/search-memories:
     get:
       operationId: search-memories
-      summary: Structured filter over the workspace context graph (Memory nodes).
+      summary: Structured filter over the workspace context graph (Memory nodes)
       description: Structured filter over the workspace context graph (Memory nodes). Filter by kind / status / tags / date range / scope. Pair with recall for semantic ANN. Bounded by scope-membership ACL.
       tags:
-      - memory
+      - Memory
       security:
       - bearerAuth: []
       responses:
@@ -139,10 +139,10 @@ paths:
   /v1/sdk/remember:
     post:
       operationId: remember-memory
-      summary: Capture a Memory with provenance.
+      summary: Capture a Memory with provenance
       description: Author a Memory (decision / fact / preference) into a scope. Requires ≥1 `derived_from` provenance pointer — a memory without provenance is a hallucination with metadata.
       tags:
-      - memory
+      - Memory
       security:
       - bearerAuth: []
       requestBody:
@@ -209,10 +209,10 @@ paths:
   /v1/sdk/supersede:
     post:
       operationId: supersede-memory
-      summary: Replace a Memory (optimistic-locked).
+      summary: Replace a Memory (optimistic-locked)
       description: Supersede an existing Memory with a new version. `expected_version` guards against concurrent writes — a mismatch returns 409 VERSION_CONFLICT.
       tags:
-      - memory
+      - Memory
       security:
       - bearerAuth: []
       requestBody:
@@ -279,10 +279,10 @@ paths:
   /v1/sdk/invalidate:
     post:
       operationId: invalidate-memory
-      summary: Retract a Memory.
+      summary: Retract a Memory
       description: Mark a Memory invalidated with a reason. Optimistic-locked via `expected_version`. Reversible with revalidate-memory.
       tags:
-      - memory
+      - Memory
       security:
       - bearerAuth: []
       requestBody:
@@ -349,10 +349,10 @@ paths:
   /v1/sdk/revalidate:
     post:
       operationId: revalidate-memory
-      summary: Undo a prior invalidate.
+      summary: Undo a prior invalidate
       description: Revert an invalidated Memory back to current. Optimistic-locked via `expected_version`.
       tags:
-      - memory
+      - Memory
       security:
       - bearerAuth: []
       requestBody:
@@ -419,10 +419,10 @@ paths:
   /v1/sdk/link:
     post:
       operationId: link-nodes
-      summary: Create a typed edge between two nodes.
+      summary: Create a typed edge between two nodes
       description: Create a typed edge in the context graph. Pass `to_type` explicitly when linking to a non-Memory node, or the edge silently lands as Memory→Memory.
       tags:
-      - memory
+      - Memory
       security:
       - bearerAuth: []
       requestBody:
@@ -489,10 +489,10 @@ paths:
   /v1/sdk/flag-contradiction:
     post:
       operationId: flag-contradiction
-      summary: Assert two Memories contradict.
+      summary: Assert two Memories contradict
       description: Record a CONTRADICTS edge between two Memories with an explanatory note.
       tags:
-      - memory
+      - Memory
       security:
       - bearerAuth: []
       requestBody:
@@ -559,10 +559,10 @@ paths:
   /v1/sdk/recall:
     post:
       operationId: recall
-      summary: Recall memories semantically or by neighborhood walk.
+      summary: Recall memories semantically or by neighborhood walk
       description: Retrieve a ranked subgraph. Provide exactly one of `query` (semantic ANN) or `seed_id` (BFS neighborhood walk). Returns flat hits, the edges linking them, ranking scores, and provenance messages.
       tags:
-      - memory
+      - Memory
       security:
       - bearerAuth: []
       requestBody:
@@ -629,10 +629,10 @@ paths:
   /v1/sdk/bootstrap-context:
     post:
       operationId: bootstrap-context
-      summary: Load an agent’s starting context.
+      summary: Load an agent’s starting context
       description: Return the current decisions, active constraints, open questions, scope membership, and a recent-activity summary for an agent identity — the orientation payload an agent loads at the start of a session.
       tags:
-      - memory
+      - Memory
       security:
       - bearerAuth: []
       requestBody:
@@ -698,6 +698,54 @@ paths:
                 $ref: '#/components/schemas/ReloadError'
 components:
   schemas:
+    RecallExpansion:
+      type: string
+      enum:
+      - provenance
+      - related
+      description: Edge-expansion mode for recall.
+    FlagContradictionRequest:
+      type: object
+      properties:
+        a_id:
+          type: string
+        b_id:
+          type: string
+        note:
+          type: string
+      required:
+      - a_id
+      - b_id
+      - note
+      additionalProperties: false
+    PaginationMeta:
+      type: object
+      properties:
+        cursor:
+          type:
+          - string
+          - 'null'
+        hasMore:
+          type: boolean
+        total:
+          type: integer
+        historyCutoff:
+          type:
+          - object
+          - 'null'
+          properties:
+            beyondCount:
+              type: integer
+            cutoffAt:
+              type: string
+              format: date-time
+          required:
+          - beyondCount
+          - cutoffAt
+          additionalProperties: false
+      required:
+      - hasMore
+      additionalProperties: false
     EdgeType:
       type: string
       enum:
@@ -718,132 +766,31 @@ components:
       - CAN_READ
       - CAN_WRITE
       description: Locked context-graph edge catalogue.
-    FlagContradictionRequest:
+    RecallSubgraph:
       type: object
       properties:
-        a_id:
-          type: string
-        b_id:
-          type: string
-        note:
-          type: string
+        hits:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemoryOutput'
+        edges:
+          type: array
+          items:
+            $ref: '#/components/schemas/EdgeOutput'
+        scores:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecallScore'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageOutput'
       required:
-      - a_id
-      - b_id
-      - note
+      - hits
+      - edges
+      - scores
       additionalProperties: false
-    ReloadError:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - false
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: '`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED).'
-            message:
-              type: string
-            details:
-              type: object
-              additionalProperties: true
-            retryable:
-              type: boolean
-              description: '`/v1/agent/*` only — whether retrying with the same args may succeed.'
-            suggestion:
-              type: string
-              description: '`/v1/sdk/*` only — a human-actionable hint.'
-            docs:
-              type: string
-              description: '`/v1/sdk/*` only — a documentation URL.'
-          required:
-          - code
-          - message
-          additionalProperties: false
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - error
-      additionalProperties: false
-    MessageOutput:
-      type: object
-      properties:
-        id:
-          type: string
-        channel_id:
-          type: string
-        thread_id:
-          type:
-          - string
-          - 'null'
-        author_identity_id:
-          type: string
-        kind:
-          type: string
-        content:
-          type: string
-        metadata:
-          type: object
-          additionalProperties: true
-        created_at:
-          type: string
-          format: date-time
-        version:
-          type: integer
-      required:
-      - id
-      - channel_id
-      - thread_id
-      - author_identity_id
-      - kind
-      - content
-      - metadata
-      - created_at
-      - version
-      additionalProperties: false
-    Meta:
-      type: object
-      properties:
-        requestId:
-          type: string
-        timestamp:
-          type: string
-          format: date-time
-        pagination:
-          $ref: '#/components/schemas/PaginationMeta'
-      required:
-      - requestId
-      - timestamp
-      additionalProperties: false
-    RecallFilters:
-      type: object
-      properties:
-        kind:
-          $ref: '#/components/schemas/MemoryKind'
-        include_superseded:
-          type: boolean
-          default: false
-        include_invalidated:
-          type: boolean
-          default: false
-        include_expired:
-          type: boolean
-          default: false
-        min_confidence:
-          type: number
-          minimum: 0
-          maximum: 1
-        min_similarity:
-          type: number
-          minimum: 0
-          maximum: 1
-          description: Cosine-similarity floor in [0,1].
-      additionalProperties: false
-    BootstrapContextEnvelope:
+    SearchMemoriesEnvelope:
       type: object
       properties:
         success:
@@ -851,27 +798,43 @@ components:
           enum:
           - true
         data:
-          $ref: '#/components/schemas/BootstrapContext'
+          $ref: '#/components/schemas/SearchMemoriesResponse'
         meta:
           $ref: '#/components/schemas/Meta'
       required:
       - success
       - data
       additionalProperties: false
-    TtlPreset:
-      type: string
-      enum:
-      - VOLATILE
-      - ACTIVE
-      - STABLE
-      description: 'Named TTL bucket: 7d / 90d / 365d.'
-    MemoryKind:
-      type: string
-      enum:
-      - decision
-      - fact
-      - preference
-      description: Memory node kind (locked V1 vocabulary).
+    EdgeOutputEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/EdgeOutput'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    MemoryOutputEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/MemoryOutput'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
     LinkToType:
       type: string
       enum:
@@ -880,16 +843,15 @@ components:
       - artifact
       - identity
       description: Target node kind for a generic edge.
-    DerivedFromRef:
+    BootstrapContextRequest:
       type: object
       properties:
-        kind:
-          $ref: '#/components/schemas/DerivedFromKind'
-        id:
+        agent_identity_id:
+          type: string
+        scope_id:
           type: string
       required:
-      - kind
-      - id
+      - agent_identity_id
       additionalProperties: false
     ScopeRef:
       type: object
@@ -908,51 +870,61 @@ components:
       - kind
       - name
       additionalProperties: false
-    EdgeOutput:
+    InvalidateRequest:
       type: object
       properties:
-        id:
+        memory_id:
           type: string
-        from_id:
+        expected_version:
+          type: integer
+        reason:
           type: string
-        from_type:
+      required:
+      - memory_id
+      - expected_version
+      - reason
+      additionalProperties: false
+    RememberRequest:
+      type: object
+      properties:
+        content:
           type: string
-        to_id:
+        kind:
+          $ref: '#/components/schemas/MemoryKind'
+        scope_id:
           type: string
-        to_type:
+        derived_from:
+          type: array
+          items:
+            $ref: '#/components/schemas/DerivedFromRef'
+          minItems: 1
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+          default: 1
+        ttl_seconds:
+          type: integer
+          description: Raw TTL. Provide this OR ttl_preset, not both.
+        ttl_preset:
+          $ref: '#/components/schemas/TtlPreset'
+        stated_by_identity_id:
           type: string
-        edge_type:
-          $ref: '#/components/schemas/EdgeType'
-        properties:
+        where:
+          type: string
+          description: 5W "Where" — origin context the claim was made in.
+        why:
+          type: string
+          description: 5W "Why" — reason the claim was captured.
+        metadata:
           type: object
           additionalProperties: true
-        created_at:
-          type: string
-          format: date-time
+          description: Free-form JSON metadata. Capped at 4KB serialized (server rejects oversize).
       required:
-      - id
-      - from_id
-      - from_type
-      - to_id
-      - to_type
-      - edge_type
-      - properties
-      - created_at
-      additionalProperties: false
-    EdgeOutputEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/EdgeOutput'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
+      - content
+      - kind
+      - scope_id
+      - derived_from
       additionalProperties: false
     RevalidateRequest:
       type: object
@@ -965,40 +937,13 @@ components:
       - memory_id
       - expected_version
       additionalProperties: false
-    MemoryOutputEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/MemoryOutput'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
-      additionalProperties: false
-    LinkRequest:
-      type: object
-      properties:
-        from_id:
-          type: string
-        to_id:
-          type: string
-        edge_type:
-          $ref: '#/components/schemas/EdgeType'
-        to_type:
-          $ref: '#/components/schemas/LinkToType'
-        properties:
-          type: object
-          additionalProperties: true
-      required:
-      - from_id
-      - to_id
-      - edge_type
-      additionalProperties: false
+    MemoryKind:
+      type: string
+      enum:
+      - decision
+      - fact
+      - preference
+      description: Memory node kind (locked V1 vocabulary).
     MemoryOutput:
       type: object
       properties:
@@ -1068,15 +1013,95 @@ components:
       - content_hash
       - metadata
       additionalProperties: false
-    BootstrapContextRequest:
+    LinkRequest:
       type: object
       properties:
-        agent_identity_id:
+        from_id:
           type: string
+        to_id:
+          type: string
+        edge_type:
+          $ref: '#/components/schemas/EdgeType'
+        to_type:
+          $ref: '#/components/schemas/LinkToType'
+        properties:
+          type: object
+          additionalProperties: true
+      required:
+      - from_id
+      - to_id
+      - edge_type
+      additionalProperties: false
+    ReloadError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: '`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED).'
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+            retryable:
+              type: boolean
+              description: '`/v1/agent/*` only — whether retrying with the same args may succeed.'
+            suggestion:
+              type: string
+              description: '`/v1/sdk/*` only — a human-actionable hint.'
+            docs:
+              type: string
+              description: '`/v1/sdk/*` only — a documentation URL.'
+          required:
+          - code
+          - message
+          additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - error
+      additionalProperties: false
+    RecallRequest:
+      type: object
+      properties:
+        query:
+          type: string
+          description: Semantic query. Provide exactly one of query or seed_id.
+        seed_id:
+          type: string
+          description: Neighborhood-walk seed. Provide exactly one of query or seed_id.
+        depth:
+          type: integer
+          minimum: 1
+          maximum: 3
+          description: BFS walk depth (with seed_id).
         scope_id:
           type: string
-      required:
-      - agent_identity_id
+        expand:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecallExpansion'
+          default:
+          - provenance
+          - related
+        filters:
+          $ref: '#/components/schemas/RecallFilters'
+        metadata_filter:
+          type: object
+          additionalProperties: true
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
       additionalProperties: false
     SearchMemoriesResponse:
       type: object
@@ -1093,40 +1118,169 @@ components:
       - hits
       - nextCursor
       additionalProperties: false
-    InvalidateRequest:
+    DerivedFromKind:
+      type: string
+      enum:
+      - message
+      - artifact
+      - memory
+      description: Polymorphic target kind for a provenance pointer.
+    TtlPreset:
+      type: string
+      enum:
+      - VOLATILE
+      - ACTIVE
+      - STABLE
+      description: 'Named TTL bucket: 7d / 90d / 365d.'
+    Meta:
+      type: object
+      properties:
+        requestId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      required:
+      - requestId
+      - timestamp
+      additionalProperties: false
+    MemoryStatus:
+      type: string
+      enum:
+      - current
+      - proposed
+      - superseded
+      - contested
+      - expired
+      - invalidated
+      description: Memory state-machine status.
+    EdgeOutput:
+      type: object
+      properties:
+        id:
+          type: string
+        from_id:
+          type: string
+        from_type:
+          type: string
+        to_id:
+          type: string
+        to_type:
+          type: string
+        edge_type:
+          $ref: '#/components/schemas/EdgeType'
+        properties:
+          type: object
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - from_id
+      - from_type
+      - to_id
+      - to_type
+      - edge_type
+      - properties
+      - created_at
+      additionalProperties: false
+    BootstrapContext:
+      type: object
+      properties:
+        current_decisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemoryOutput'
+        active_constraints:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemoryOutput'
+        open_questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemoryOutput'
+        scope_membership:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScopeRef'
+        recent_activity:
+          type: string
+      required:
+      - current_decisions
+      - active_constraints
+      - open_questions
+      - scope_membership
+      - recent_activity
+      additionalProperties: false
+    ScopeKind:
+      type: string
+      enum:
+      - org
+      - team
+      - project
+      - channel
+      description: Scope hierarchy level.
+    MessageOutput:
+      type: object
+      properties:
+        id:
+          type: string
+        channel_id:
+          type: string
+        thread_id:
+          type:
+          - string
+          - 'null'
+        author_identity_id:
+          type: string
+        kind:
+          type: string
+        content:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
+        version:
+          type: integer
+      required:
+      - id
+      - channel_id
+      - thread_id
+      - author_identity_id
+      - kind
+      - content
+      - metadata
+      - created_at
+      - version
+      additionalProperties: false
+    RecallScore:
       type: object
       properties:
         memory_id:
           type: string
-        expected_version:
-          type: integer
-        reason:
-          type: string
+        total:
+          type: number
+        similarity:
+          type: number
+        confidence_bonus:
+          type: number
+        recency_penalty:
+          type: number
+        supersession_penalty:
+          type: number
       required:
       - memory_id
-      - expected_version
-      - reason
-      additionalProperties: false
-    RecallExpansion:
-      type: string
-      enum:
-      - provenance
-      - related
-      description: Edge-expansion mode for recall.
-    SearchMemoriesEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/SearchMemoriesResponse'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
+      - total
+      - similarity
+      - confidence_bonus
+      - recency_penalty
+      - supersession_penalty
       additionalProperties: false
     RecallSubgraphEnvelope:
       type: object
@@ -1143,55 +1297,20 @@ components:
       - success
       - data
       additionalProperties: false
-    ScopeKind:
-      type: string
-      enum:
-      - org
-      - team
-      - project
-      - channel
-      description: Scope hierarchy level.
-    RememberRequest:
+    BootstrapContextEnvelope:
       type: object
       properties:
-        content:
-          type: string
-        kind:
-          $ref: '#/components/schemas/MemoryKind'
-        scope_id:
-          type: string
-        derived_from:
-          type: array
-          items:
-            $ref: '#/components/schemas/DerivedFromRef'
-          minItems: 1
-        confidence:
-          type: number
-          minimum: 0
-          maximum: 1
-          default: 1
-        ttl_seconds:
-          type: integer
-          description: Raw TTL. Provide this OR ttl_preset, not both.
-        ttl_preset:
-          $ref: '#/components/schemas/TtlPreset'
-        stated_by_identity_id:
-          type: string
-        where:
-          type: string
-          description: 5W "Where" — origin context the claim was made in.
-        why:
-          type: string
-          description: 5W "Why" — reason the claim was captured.
-        metadata:
-          type: object
-          additionalProperties: true
-          description: Free-form JSON metadata. Capped at 4KB serialized (server rejects oversize).
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/BootstrapContext'
+        meta:
+          $ref: '#/components/schemas/Meta'
       required:
-      - content
-      - kind
-      - scope_id
-      - derived_from
+      - success
+      - data
       additionalProperties: false
     SupersedeRequest:
       type: object
@@ -1233,159 +1352,40 @@ components:
       - new_content
       - derived_from
       additionalProperties: false
-    RecallSubgraph:
+    DerivedFromRef:
       type: object
       properties:
-        hits:
-          type: array
-          items:
-            $ref: '#/components/schemas/MemoryOutput'
-        edges:
-          type: array
-          items:
-            $ref: '#/components/schemas/EdgeOutput'
-        scores:
-          type: array
-          items:
-            $ref: '#/components/schemas/RecallScore'
-        messages:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageOutput'
+        kind:
+          $ref: '#/components/schemas/DerivedFromKind'
+        id:
+          type: string
       required:
-      - hits
-      - edges
-      - scores
+      - kind
+      - id
       additionalProperties: false
-    RecallScore:
+    RecallFilters:
       type: object
       properties:
-        memory_id:
-          type: string
-        total:
-          type: number
-        similarity:
-          type: number
-        confidence_bonus:
-          type: number
-        recency_penalty:
-          type: number
-        supersession_penalty:
-          type: number
-      required:
-      - memory_id
-      - total
-      - similarity
-      - confidence_bonus
-      - recency_penalty
-      - supersession_penalty
-      additionalProperties: false
-    MemoryStatus:
-      type: string
-      enum:
-      - current
-      - proposed
-      - superseded
-      - contested
-      - expired
-      - invalidated
-      description: Memory state-machine status.
-    RecallRequest:
-      type: object
-      properties:
-        query:
-          type: string
-          description: Semantic query. Provide exactly one of query or seed_id.
-        seed_id:
-          type: string
-          description: Neighborhood-walk seed. Provide exactly one of query or seed_id.
-        depth:
-          type: integer
-          minimum: 1
-          maximum: 3
-          description: BFS walk depth (with seed_id).
-        scope_id:
-          type: string
-        expand:
-          type: array
-          items:
-            $ref: '#/components/schemas/RecallExpansion'
-          default:
-          - provenance
-          - related
-        filters:
-          $ref: '#/components/schemas/RecallFilters'
-        metadata_filter:
-          type: object
-          additionalProperties: true
-        limit:
-          type: integer
-          minimum: 1
-          maximum: 100
-          default: 20
-      additionalProperties: false
-    DerivedFromKind:
-      type: string
-      enum:
-      - message
-      - artifact
-      - memory
-      description: Polymorphic target kind for a provenance pointer.
-    PaginationMeta:
-      type: object
-      properties:
-        cursor:
-          type:
-          - string
-          - 'null'
-        hasMore:
+        kind:
+          $ref: '#/components/schemas/MemoryKind'
+        include_superseded:
           type: boolean
-        total:
-          type: integer
-        historyCutoff:
-          type:
-          - object
-          - 'null'
-          properties:
-            beyondCount:
-              type: integer
-            cutoffAt:
-              type: string
-              format: date-time
-          required:
-          - beyondCount
-          - cutoffAt
-          additionalProperties: false
-      required:
-      - hasMore
-      additionalProperties: false
-    BootstrapContext:
-      type: object
-      properties:
-        current_decisions:
-          type: array
-          items:
-            $ref: '#/components/schemas/MemoryOutput'
-        active_constraints:
-          type: array
-          items:
-            $ref: '#/components/schemas/MemoryOutput'
-        open_questions:
-          type: array
-          items:
-            $ref: '#/components/schemas/MemoryOutput'
-        scope_membership:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScopeRef'
-        recent_activity:
-          type: string
-      required:
-      - current_decisions
-      - active_constraints
-      - open_questions
-      - scope_membership
-      - recent_activity
+          default: false
+        include_invalidated:
+          type: boolean
+          default: false
+        include_expired:
+          type: boolean
+          default: false
+        min_confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        min_similarity:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Cosine-similarity floor in [0,1].
       additionalProperties: false
   securitySchemes:
     bearerAuth:

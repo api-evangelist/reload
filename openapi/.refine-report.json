@@ -1,12 +1,7 @@
 {
   "provider": "reload",
   "sources": [
-    "reload-channels-api-openapi.yml",
-    "reload-files-api-openapi.yml",
-    "reload-memory-api-openapi.yml",
-    "reload-messages-api-openapi.yml",
-    "reload-tasks-api-openapi.yml",
-    "reload-workspace-api-openapi.yml"
+    "_original/reload-openapi-original.json"
   ],
   "outputs": [
     "reload-channels-api-openapi.yml",
@@ -19,6 +14,17 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "reload-openapi-original.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "reload-channels-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "reload-files-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "reload-memory-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "reload-messages-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "reload-tasks-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "reload-workspace-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
