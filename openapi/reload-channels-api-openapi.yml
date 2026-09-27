@@ -234,21 +234,18 @@ paths:
           description: The channel ID to inspect.
 components:
   schemas:
-    Meta:
-      type: object
-      properties:
-        requestId:
-          type: string
-        timestamp:
-          type: string
-          format: date-time
-        pagination:
-          $ref: '#/components/schemas/PaginationMeta'
-      required:
-      - requestId
-      - timestamp
-      additionalProperties: false
-    ChannelMemberHuman:
+    ChannelMember:
+      oneOf:
+      - $ref: '#/components/schemas/ChannelMemberHuman'
+      - $ref: '#/components/schemas/ChannelMemberAgent'
+      - $ref: '#/components/schemas/ChannelMemberSystem'
+      discriminator:
+        propertyName: type
+        mapping:
+          human: '#/components/schemas/ChannelMemberHuman'
+          agent: '#/components/schemas/ChannelMemberAgent'
+          system: '#/components/schemas/ChannelMemberSystem'
+    ChannelMemberSystem:
       type: object
       properties:
         id:
@@ -256,7 +253,7 @@ components:
         type:
           type: string
           enum:
-          - human
+          - system
         name:
           type: string
         handle:
@@ -266,6 +263,21 @@ components:
       - type
       - name
       - handle
+      additionalProperties: false
+    ChannelManifestEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/ChannelManifest'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
       additionalProperties: false
     PaginationMeta:
       type: object
@@ -295,37 +307,60 @@ components:
       required:
       - hasMore
       additionalProperties: false
-    ChannelManifestMember:
-      type: object
-      properties:
-        memberId:
-          type: string
-        memberType:
-          type: string
-        joinedAt:
-          type: string
-          format: date-time
-      required:
-      - memberId
-      - memberType
-      - joinedAt
-      additionalProperties: false
-    ChannelListEnvelope:
+    ReloadError:
       type: object
       properties:
         success:
           type: boolean
           enum:
-          - true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Channel'
+          - false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: '`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED).'
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+            retryable:
+              type: boolean
+              description: '`/v1/agent/*` only — whether retrying with the same args may succeed.'
+            suggestion:
+              type: string
+              description: '`/v1/sdk/*` only — a human-actionable hint.'
+            docs:
+              type: string
+              description: '`/v1/sdk/*` only — a documentation URL.'
+          required:
+          - code
+          - message
+          additionalProperties: false
         meta:
           $ref: '#/components/schemas/Meta'
       required:
       - success
-      - data
+      - error
+      additionalProperties: false
+    ChannelMembersPage:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelMember'
+        hasMore:
+          type: boolean
+        cursor:
+          type:
+          - string
+          - 'null'
+      required:
+      - members
+      - hasMore
+      - cursor
       additionalProperties: false
     Channel:
       type: object
@@ -362,7 +397,7 @@ components:
       - success
       - data
       additionalProperties: false
-    ChannelManifestEnvelope:
+    ChannelListEnvelope:
       type: object
       properties:
         success:
@@ -370,72 +405,14 @@ components:
           enum:
           - true
         data:
-          $ref: '#/components/schemas/ChannelManifest'
+          type: array
+          items:
+            $ref: '#/components/schemas/Channel'
         meta:
           $ref: '#/components/schemas/Meta'
       required:
       - success
       - data
-      additionalProperties: false
-    ChannelMembersPage:
-      type: object
-      properties:
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChannelMember'
-        hasMore:
-          type: boolean
-        cursor:
-          type:
-          - string
-          - 'null'
-      required:
-      - members
-      - hasMore
-      - cursor
-      additionalProperties: false
-    ChannelMemberSystem:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-          enum:
-          - system
-        name:
-          type: string
-        handle:
-          type: string
-      required:
-      - id
-      - type
-      - name
-      - handle
-      additionalProperties: false
-    ChannelMemberAgent:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-          enum:
-          - agent
-        name:
-          type: string
-        handle:
-          type: string
-        agentType:
-          type: string
-          description: local | cloud | team
-      required:
-      - id
-      - type
-      - name
-      - handle
-      - agentType
       additionalProperties: false
     ChannelManifest:
       type: object
@@ -473,53 +450,76 @@ components:
       - members
       - recentMessageCount
       additionalProperties: false
-    ChannelMember:
-      oneOf:
-      - $ref: '#/components/schemas/ChannelMemberHuman'
-      - $ref: '#/components/schemas/ChannelMemberAgent'
-      - $ref: '#/components/schemas/ChannelMemberSystem'
-      discriminator:
-        propertyName: type
-        mapping:
-          human: '#/components/schemas/ChannelMemberHuman'
-          agent: '#/components/schemas/ChannelMemberAgent'
-          system: '#/components/schemas/ChannelMemberSystem'
-    ReloadError:
+    ChannelManifestMember:
       type: object
       properties:
-        success:
-          type: boolean
-          enum:
-          - false
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: '`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED).'
-            message:
-              type: string
-            details:
-              type: object
-              additionalProperties: true
-            retryable:
-              type: boolean
-              description: '`/v1/agent/*` only — whether retrying with the same args may succeed.'
-            suggestion:
-              type: string
-              description: '`/v1/sdk/*` only — a human-actionable hint.'
-            docs:
-              type: string
-              description: '`/v1/sdk/*` only — a documentation URL.'
-          required:
-          - code
-          - message
-          additionalProperties: false
-        meta:
-          $ref: '#/components/schemas/Meta'
+        memberId:
+          type: string
+        memberType:
+          type: string
+        joinedAt:
+          type: string
+          format: date-time
       required:
-      - success
-      - error
+      - memberId
+      - memberType
+      - joinedAt
+      additionalProperties: false
+    Meta:
+      type: object
+      properties:
+        requestId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      required:
+      - requestId
+      - timestamp
+      additionalProperties: false
+    ChannelMemberHuman:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - human
+        name:
+          type: string
+        handle:
+          type: string
+      required:
+      - id
+      - type
+      - name
+      - handle
+      additionalProperties: false
+    ChannelMemberAgent:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - agent
+        name:
+          type: string
+        handle:
+          type: string
+        agentType:
+          type: string
+          description: local | cloud | team
+      required:
+      - id
+      - type
+      - name
+      - handle
+      - agentType
       additionalProperties: false
   securitySchemes:
     bearerAuth:

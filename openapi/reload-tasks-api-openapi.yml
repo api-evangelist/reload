@@ -922,74 +922,6 @@ paths:
               - body
 components:
   schemas:
-    Meta:
-      type: object
-      properties:
-        requestId:
-          type: string
-        timestamp:
-          type: string
-          format: date-time
-        pagination:
-          $ref: '#/components/schemas/PaginationMeta'
-      required:
-      - requestId
-      - timestamp
-      additionalProperties: false
-    TaskComment:
-      type: object
-      properties:
-        id:
-          type: string
-        taskId:
-          type: string
-        authorUserId:
-          type:
-          - string
-          - 'null'
-        authorAgentId:
-          type:
-          - string
-          - 'null'
-        body:
-          type: string
-        parentCommentId:
-          type:
-          - string
-          - 'null'
-        resolvedAt:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        mentions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Mention'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        deletedAt:
-          type:
-          - string
-          - 'null'
-          format: date-time
-      required:
-      - id
-      - taskId
-      - authorUserId
-      - authorAgentId
-      - body
-      - parentCommentId
-      - resolvedAt
-      - mentions
-      - createdAt
-      - updatedAt
-      - deletedAt
-      additionalProperties: false
     Mention:
       type: object
       properties:
@@ -1004,78 +936,6 @@ components:
       - id
       - type
       additionalProperties: false
-    PaginationMeta:
-      type: object
-      properties:
-        cursor:
-          type:
-          - string
-          - 'null'
-        hasMore:
-          type: boolean
-        total:
-          type: integer
-        historyCutoff:
-          type:
-          - object
-          - 'null'
-          properties:
-            beyondCount:
-              type: integer
-            cutoffAt:
-              type: string
-              format: date-time
-          required:
-          - beyondCount
-          - cutoffAt
-          additionalProperties: false
-      required:
-      - hasMore
-      additionalProperties: false
-    TaskListEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Task'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
-      additionalProperties: false
-    TaskCommentEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/TaskComment'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
-      additionalProperties: false
-    TaskStatus:
-      type: string
-      enum:
-      - triage
-      - backlog
-      - todo
-      - in_progress
-      - blocked
-      - in_review
-      - done
-      - cancelled
-      description: Task lifecycle state.
     Task:
       type: object
       properties:
@@ -1193,29 +1053,87 @@ components:
       - updatedAt
       - deletedAt
       additionalProperties: false
-    TaskPriority:
-      type: string
-      enum:
-      - none
-      - low
-      - medium
-      - high
-      - urgent
-      description: Task priority.
-    TaskEnvelope:
+    PaginationMeta:
       type: object
       properties:
-        success:
+        cursor:
+          type:
+          - string
+          - 'null'
+        hasMore:
           type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/Task'
-        meta:
-          $ref: '#/components/schemas/Meta'
+        total:
+          type: integer
+        historyCutoff:
+          type:
+          - object
+          - 'null'
+          properties:
+            beyondCount:
+              type: integer
+            cutoffAt:
+              type: string
+              format: date-time
+          required:
+          - beyondCount
+          - cutoffAt
+          additionalProperties: false
       required:
-      - success
-      - data
+      - hasMore
+      additionalProperties: false
+    TaskComment:
+      type: object
+      properties:
+        id:
+          type: string
+        taskId:
+          type: string
+        authorUserId:
+          type:
+          - string
+          - 'null'
+        authorAgentId:
+          type:
+          - string
+          - 'null'
+        body:
+          type: string
+        parentCommentId:
+          type:
+          - string
+          - 'null'
+        resolvedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        mentions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Mention'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        deletedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      required:
+      - id
+      - taskId
+      - authorUserId
+      - authorAgentId
+      - body
+      - parentCommentId
+      - resolvedAt
+      - mentions
+      - createdAt
+      - updatedAt
+      - deletedAt
       additionalProperties: false
     ReloadError:
       type: object
@@ -1253,6 +1171,88 @@ components:
       required:
       - success
       - error
+      additionalProperties: false
+    TaskCommentEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/TaskComment'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    TaskStatus:
+      type: string
+      enum:
+      - triage
+      - backlog
+      - todo
+      - in_progress
+      - blocked
+      - in_review
+      - done
+      - cancelled
+      description: Task lifecycle state.
+    TaskListEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    TaskPriority:
+      type: string
+      enum:
+      - none
+      - low
+      - medium
+      - high
+      - urgent
+      description: Task priority.
+    TaskEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/Task'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    Meta:
+      type: object
+      properties:
+        requestId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      required:
+      - requestId
+      - timestamp
       additionalProperties: false
   securitySchemes:
     bearerAuth:

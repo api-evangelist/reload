@@ -227,46 +227,6 @@ paths:
       parameters: []
 components:
   schemas:
-    VerifyConnectionResult:
-      type: object
-      properties:
-        ok:
-          type: boolean
-        reason:
-          type: string
-          description: Failure reason code (present when ok=false).
-        message:
-          type: string
-        verifiedAt:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: Set when ok=true.
-        agentId:
-          type: string
-          description: Set when ok=true.
-        workspaceId:
-          type: string
-          description: Set when ok=true.
-      required:
-      - ok
-      - message
-      additionalProperties: false
-    Meta:
-      type: object
-      properties:
-        requestId:
-          type: string
-        timestamp:
-          type: string
-          format: date-time
-        pagination:
-          $ref: '#/components/schemas/PaginationMeta'
-      required:
-      - requestId
-      - timestamp
-      additionalProperties: false
     WorkspaceInfo:
       type: object
       properties:
@@ -294,6 +254,32 @@ components:
       - channelCount
       - agentCount
       additionalProperties: false
+    VerifyConnectionResult:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        reason:
+          type: string
+          description: Failure reason code (present when ok=false).
+        message:
+          type: string
+        verifiedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Set when ok=true.
+        agentId:
+          type: string
+          description: Set when ok=true.
+        workspaceId:
+          type: string
+          description: Set when ok=true.
+      required:
+      - ok
+      - message
+      additionalProperties: false
     WorkspaceInfoEnvelope:
       type: object
       properties:
@@ -308,26 +294,6 @@ components:
       required:
       - success
       - data
-      additionalProperties: false
-    ResolvedIdentity:
-      type: object
-      properties:
-        id:
-          type: string
-        kind:
-          type: string
-          enum:
-          - user
-          - agent
-        displayName:
-          type: string
-        handle:
-          type: string
-      required:
-      - id
-      - kind
-      - displayName
-      - handle
       additionalProperties: false
     PaginationMeta:
       type: object
@@ -356,21 +322,6 @@ components:
           additionalProperties: false
       required:
       - hasMore
-      additionalProperties: false
-    ResolvedIdentityEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/ResolvedIdentity'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
       additionalProperties: false
     VerifyConnectionEnvelope:
       type: object
@@ -423,6 +374,55 @@ components:
       required:
       - success
       - error
+      additionalProperties: false
+    ResolvedIdentity:
+      type: object
+      properties:
+        id:
+          type: string
+        kind:
+          type: string
+          enum:
+          - user
+          - agent
+        displayName:
+          type: string
+        handle:
+          type: string
+      required:
+      - id
+      - kind
+      - displayName
+      - handle
+      additionalProperties: false
+    ResolvedIdentityEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/ResolvedIdentity'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    Meta:
+      type: object
+      properties:
+        requestId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      required:
+      - requestId
+      - timestamp
       additionalProperties: false
   securitySchemes:
     bearerAuth:
