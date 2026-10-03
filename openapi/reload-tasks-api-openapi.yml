@@ -922,20 +922,6 @@ paths:
               - body
 components:
   schemas:
-    Mention:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-          enum:
-          - user
-          - agent
-      required:
-      - id
-      - type
-      additionalProperties: false
     Task:
       type: object
       properties:
@@ -1053,34 +1039,46 @@ components:
       - updatedAt
       - deletedAt
       additionalProperties: false
-    PaginationMeta:
+    Mention:
       type: object
       properties:
-        cursor:
-          type:
-          - string
-          - 'null'
-        hasMore:
-          type: boolean
-        total:
-          type: integer
-        historyCutoff:
-          type:
-          - object
-          - 'null'
-          properties:
-            beyondCount:
-              type: integer
-            cutoffAt:
-              type: string
-              format: date-time
-          required:
-          - beyondCount
-          - cutoffAt
-          additionalProperties: false
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - user
+          - agent
       required:
-      - hasMore
+      - id
+      - type
       additionalProperties: false
+    TaskListEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    TaskPriority:
+      type: string
+      enum:
+      - none
+      - low
+      - medium
+      - high
+      - urgent
+      description: Task priority.
     TaskComment:
       type: object
       properties:
@@ -1135,6 +1133,76 @@ components:
       - updatedAt
       - deletedAt
       additionalProperties: false
+    TaskStatus:
+      type: string
+      enum:
+      - triage
+      - backlog
+      - todo
+      - in_progress
+      - blocked
+      - in_review
+      - done
+      - cancelled
+      description: Task lifecycle state.
+    PaginationMeta:
+      type: object
+      properties:
+        cursor:
+          type:
+          - string
+          - 'null'
+        hasMore:
+          type: boolean
+        total:
+          type: integer
+        historyCutoff:
+          type:
+          - object
+          - 'null'
+          properties:
+            beyondCount:
+              type: integer
+            cutoffAt:
+              type: string
+              format: date-time
+          required:
+          - beyondCount
+          - cutoffAt
+          additionalProperties: false
+      required:
+      - hasMore
+      additionalProperties: false
+    TaskEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/Task'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    TaskCommentEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/TaskComment'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
     ReloadError:
       type: object
       properties:
@@ -1171,74 +1239,6 @@ components:
       required:
       - success
       - error
-      additionalProperties: false
-    TaskCommentEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/TaskComment'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
-      additionalProperties: false
-    TaskStatus:
-      type: string
-      enum:
-      - triage
-      - backlog
-      - todo
-      - in_progress
-      - blocked
-      - in_review
-      - done
-      - cancelled
-      description: Task lifecycle state.
-    TaskListEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Task'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
-      additionalProperties: false
-    TaskPriority:
-      type: string
-      enum:
-      - none
-      - low
-      - medium
-      - high
-      - urgent
-      description: Task priority.
-    TaskEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/Task'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
       additionalProperties: false
     Meta:
       type: object

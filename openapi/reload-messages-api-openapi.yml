@@ -592,54 +592,24 @@ paths:
                 $ref: '#/components/schemas/ReloadError'
 components:
   schemas:
-    ReloadError:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - false
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: '`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED).'
-            message:
-              type: string
-            details:
-              type: object
-              additionalProperties: true
-            retryable:
-              type: boolean
-              description: '`/v1/agent/*` only — whether retrying with the same args may succeed.'
-            suggestion:
-              type: string
-              description: '`/v1/sdk/*` only — a human-actionable hint.'
-            docs:
-              type: string
-              description: '`/v1/sdk/*` only — a documentation URL.'
-          required:
-          - code
-          - message
-          additionalProperties: false
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - error
-      additionalProperties: false
-    MessageSummary:
+    Message:
       type: object
       properties:
         id:
+          type: string
+        channelId:
           type: string
         parentId:
           type:
           - string
           - 'null'
+          description: Thread parent message id.
         senderType:
           type: string
+          enum:
+          - human
+          - agent
+          - system
         senderId:
           type: string
         content:
@@ -647,22 +617,49 @@ components:
         metadata:
           type: object
           additionalProperties: true
+        isEdited:
+          type: boolean
+        version:
+          type: integer
         replyCount:
           type: integer
+        reactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageReaction'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageAttachment'
         createdAt:
           type: string
           format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        deletedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
       required:
       - id
+      - channelId
       - parentId
       - senderType
       - senderId
       - content
       - metadata
+      - isEdited
+      - version
       - replyCount
+      - reactions
+      - attachments
       - createdAt
+      - updatedAt
+      - deletedAt
       additionalProperties: false
-    MessageEnvelope:
+    MessagesPageEnvelope:
       type: object
       properties:
         success:
@@ -670,71 +667,25 @@ components:
           enum:
           - true
         data:
-          $ref: '#/components/schemas/Message'
+          $ref: '#/components/schemas/MessagesPage'
         meta:
           $ref: '#/components/schemas/Meta'
       required:
       - success
       - data
       additionalProperties: false
-    PostMessageRequest:
+    MessagesPage:
       type: object
       properties:
-        channel_id:
-          type: string
-        content:
-          type: string
-        kind:
-          type: string
-          default: text
-          description: Free-form kind tag.
-        parent_message_id:
-          type: string
-          description: Thread parent — server resolves to thread_id.
-        mention_identity_ids:
+        messages:
           type: array
           items:
-            type: string
-        reference_artifact_ids:
-          type: array
-          items:
-            type: string
-        metadata:
-          type: object
-          additionalProperties: true
-          description: Free-form JSON metadata. Capped at 4KB serialized (server rejects oversize).
-      required:
-      - channel_id
-      - content
-      additionalProperties: false
-    Meta:
-      type: object
-      properties:
-        requestId:
-          type: string
-        timestamp:
-          type: string
-          format: date-time
-        pagination:
-          $ref: '#/components/schemas/PaginationMeta'
-      required:
-      - requestId
-      - timestamp
-      additionalProperties: false
-    SearchMessagesEnvelope:
-      type: object
-      properties:
-        success:
+            $ref: '#/components/schemas/MessageSummary'
+        hasMore:
           type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/SearchMessagesResponse'
-        meta:
-          $ref: '#/components/schemas/Meta'
       required:
-      - success
-      - data
+      - messages
+      - hasMore
       additionalProperties: false
     PaginationMeta:
       type: object
@@ -764,19 +715,35 @@ components:
       required:
       - hasMore
       additionalProperties: false
-    ArtifactRef:
+    UnreadMentionsEnvelope:
       type: object
       properties:
-        messageId:
-          type: string
-        name:
-          type: string
-        type:
-          type: string
-          description: code | markdown | document | image
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/UnreadMentionsResponse'
+        meta:
+          $ref: '#/components/schemas/Meta'
       required:
-      - name
-      - type
+      - success
+      - data
+      additionalProperties: false
+    ArtifactRefEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/ArtifactRef'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
       additionalProperties: false
     MessageSearchHit:
       type: object
@@ -847,33 +814,68 @@ components:
       - mimeType
       - createdAt
       additionalProperties: false
-    UnreadMentionsEnvelope:
+    MessageReaction:
       type: object
       properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/UnreadMentionsResponse'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
-      additionalProperties: false
-    MessagesPage:
-      type: object
-      properties:
-        messages:
+        emoji:
+          type: string
+        userIds:
           type: array
           items:
-            $ref: '#/components/schemas/MessageSummary'
-        hasMore:
-          type: boolean
+            type: string
+        count:
+          type: integer
       required:
-      - messages
-      - hasMore
+      - emoji
+      - userIds
+      - count
+      additionalProperties: false
+    MessageSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        parentId:
+          type:
+          - string
+          - 'null'
+        senderType:
+          type: string
+        senderId:
+          type: string
+        content:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+        replyCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - parentId
+      - senderType
+      - senderId
+      - content
+      - metadata
+      - replyCount
+      - createdAt
+      additionalProperties: false
+    Meta:
+      type: object
+      properties:
+        requestId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      required:
+      - requestId
+      - timestamp
       additionalProperties: false
     MessageOutputEnvelope:
       type: object
@@ -889,86 +891,6 @@ components:
       required:
       - success
       - data
-      additionalProperties: false
-    UnreadMentionsResponse:
-      type: object
-      properties:
-        mentions:
-          type: array
-          items:
-            $ref: '#/components/schemas/MentionSummary'
-        count:
-          type: integer
-      required:
-      - mentions
-      - count
-      additionalProperties: false
-    Message:
-      type: object
-      properties:
-        id:
-          type: string
-        channelId:
-          type: string
-        parentId:
-          type:
-          - string
-          - 'null'
-          description: Thread parent message id.
-        senderType:
-          type: string
-          enum:
-          - human
-          - agent
-          - system
-        senderId:
-          type: string
-        content:
-          type: string
-        metadata:
-          type: object
-          additionalProperties: true
-        isEdited:
-          type: boolean
-        version:
-          type: integer
-        replyCount:
-          type: integer
-        reactions:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageReaction'
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageAttachment'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        deletedAt:
-          type:
-          - string
-          - 'null'
-          format: date-time
-      required:
-      - id
-      - channelId
-      - parentId
-      - senderType
-      - senderId
-      - content
-      - metadata
-      - isEdited
-      - version
-      - replyCount
-      - reactions
-      - attachments
-      - createdAt
-      - updatedAt
-      - deletedAt
       additionalProperties: false
     MessageOutput:
       type: object
@@ -1006,36 +928,29 @@ components:
       - created_at
       - version
       additionalProperties: false
-    MessageReaction:
+    SearchMessagesResponse:
       type: object
       properties:
-        emoji:
-          type: string
-        userIds:
+        messages:
           type: array
           items:
-            type: string
-        count:
-          type: integer
+            $ref: '#/components/schemas/MessageSearchHit'
       required:
-      - emoji
-      - userIds
-      - count
+      - messages
       additionalProperties: false
-    ArtifactRefEnvelope:
+    ArtifactRef:
       type: object
       properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/ArtifactRef'
-        meta:
-          $ref: '#/components/schemas/Meta'
+        messageId:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          description: code | markdown | document | image
       required:
-      - success
-      - data
+      - name
+      - type
       additionalProperties: false
     MentionSummary:
       type: object
@@ -1069,7 +984,7 @@ components:
       - content
       - createdAt
       additionalProperties: false
-    MessagesPageEnvelope:
+    SearchMessagesEnvelope:
       type: object
       properties:
         success:
@@ -1077,22 +992,107 @@ components:
           enum:
           - true
         data:
-          $ref: '#/components/schemas/MessagesPage'
+          $ref: '#/components/schemas/SearchMessagesResponse'
         meta:
           $ref: '#/components/schemas/Meta'
       required:
       - success
       - data
       additionalProperties: false
-    SearchMessagesResponse:
+    PostMessageRequest:
       type: object
       properties:
-        messages:
+        channel_id:
+          type: string
+        content:
+          type: string
+        kind:
+          type: string
+          default: text
+          description: Free-form kind tag.
+        parent_message_id:
+          type: string
+          description: Thread parent — server resolves to thread_id.
+        mention_identity_ids:
           type: array
           items:
-            $ref: '#/components/schemas/MessageSearchHit'
+            type: string
+        reference_artifact_ids:
+          type: array
+          items:
+            type: string
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Free-form JSON metadata. Capped at 4KB serialized (server rejects oversize).
       required:
-      - messages
+      - channel_id
+      - content
+      additionalProperties: false
+    ReloadError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: '`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED).'
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+            retryable:
+              type: boolean
+              description: '`/v1/agent/*` only — whether retrying with the same args may succeed.'
+            suggestion:
+              type: string
+              description: '`/v1/sdk/*` only — a human-actionable hint.'
+            docs:
+              type: string
+              description: '`/v1/sdk/*` only — a documentation URL.'
+          required:
+          - code
+          - message
+          additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - error
+      additionalProperties: false
+    MessageEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/Message'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    UnreadMentionsResponse:
+      type: object
+      properties:
+        mentions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MentionSummary'
+        count:
+          type: integer
+      required:
+      - mentions
+      - count
       additionalProperties: false
   securitySchemes:
     bearerAuth:

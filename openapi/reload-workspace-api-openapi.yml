@@ -227,32 +227,20 @@ paths:
       parameters: []
 components:
   schemas:
-    WorkspaceInfo:
+    VerifyConnectionEnvelope:
       type: object
       properties:
-        id:
-          type: string
-        name:
-          type: string
-        slug:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        memberCount:
-          type: integer
-        channelCount:
-          type: integer
-        agentCount:
-          type: integer
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/VerifyConnectionResult'
+        meta:
+          $ref: '#/components/schemas/Meta'
       required:
-      - id
-      - name
-      - slug
-      - createdAt
-      - memberCount
-      - channelCount
-      - agentCount
+      - success
+      - data
       additionalProperties: false
     VerifyConnectionResult:
       type: object
@@ -295,6 +283,26 @@ components:
       - success
       - data
       additionalProperties: false
+    ResolvedIdentity:
+      type: object
+      properties:
+        id:
+          type: string
+        kind:
+          type: string
+          enum:
+          - user
+          - agent
+        displayName:
+          type: string
+        handle:
+          type: string
+      required:
+      - id
+      - kind
+      - displayName
+      - handle
+      additionalProperties: false
     PaginationMeta:
       type: object
       properties:
@@ -323,20 +331,32 @@ components:
       required:
       - hasMore
       additionalProperties: false
-    VerifyConnectionEnvelope:
+    WorkspaceInfo:
       type: object
       properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/VerifyConnectionResult'
-        meta:
-          $ref: '#/components/schemas/Meta'
+        id:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        memberCount:
+          type: integer
+        channelCount:
+          type: integer
+        agentCount:
+          type: integer
       required:
-      - success
-      - data
+      - id
+      - name
+      - slug
+      - createdAt
+      - memberCount
+      - channelCount
+      - agentCount
       additionalProperties: false
     ReloadError:
       type: object
@@ -374,26 +394,6 @@ components:
       required:
       - success
       - error
-      additionalProperties: false
-    ResolvedIdentity:
-      type: object
-      properties:
-        id:
-          type: string
-        kind:
-          type: string
-          enum:
-          - user
-          - agent
-        displayName:
-          type: string
-        handle:
-          type: string
-      required:
-      - id
-      - kind
-      - displayName
-      - handle
       additionalProperties: false
     ResolvedIdentityEnvelope:
       type: object

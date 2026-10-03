@@ -179,6 +179,36 @@ paths:
           description: The attachment id (from a message's attachments list).
 components:
   schemas:
+    UploadTargetEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/UploadTarget'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    DownloadTargetEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/DownloadTarget'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
     DownloadTarget:
       type: object
       properties:
@@ -234,6 +264,38 @@ components:
       required:
       - hasMore
       additionalProperties: false
+    UploadTarget:
+      type: object
+      properties:
+        attachmentId:
+          type: string
+        uploadUrl:
+          type: string
+          format: uri
+          description: Presigned GCS PUT URL.
+        method:
+          type: string
+          enum:
+          - PUT
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+          description: Headers the caller MUST send on the raw PUT.
+        expiresAt:
+          type: string
+          format: date-time
+        maxBytes:
+          type: integer
+          description: Workspace max file size in bytes.
+      required:
+      - attachmentId
+      - uploadUrl
+      - method
+      - headers
+      - expiresAt
+      - maxBytes
+      additionalProperties: false
     ReloadError:
       type: object
       properties:
@@ -270,68 +332,6 @@ components:
       required:
       - success
       - error
-      additionalProperties: false
-    DownloadTargetEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/DownloadTarget'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
-      additionalProperties: false
-    UploadTargetEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/UploadTarget'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
-      additionalProperties: false
-    UploadTarget:
-      type: object
-      properties:
-        attachmentId:
-          type: string
-        uploadUrl:
-          type: string
-          format: uri
-          description: Presigned GCS PUT URL.
-        method:
-          type: string
-          enum:
-          - PUT
-        headers:
-          type: object
-          additionalProperties:
-            type: string
-          description: Headers the caller MUST send on the raw PUT.
-        expiresAt:
-          type: string
-          format: date-time
-        maxBytes:
-          type: integer
-          description: Workspace max file size in bytes.
-      required:
-      - attachmentId
-      - uploadUrl
-      - method
-      - headers
-      - expiresAt
-      - maxBytes
       additionalProperties: false
     Meta:
       type: object

@@ -234,134 +234,6 @@ paths:
           description: The channel ID to inspect.
 components:
   schemas:
-    ChannelMember:
-      oneOf:
-      - $ref: '#/components/schemas/ChannelMemberHuman'
-      - $ref: '#/components/schemas/ChannelMemberAgent'
-      - $ref: '#/components/schemas/ChannelMemberSystem'
-      discriminator:
-        propertyName: type
-        mapping:
-          human: '#/components/schemas/ChannelMemberHuman'
-          agent: '#/components/schemas/ChannelMemberAgent'
-          system: '#/components/schemas/ChannelMemberSystem'
-    ChannelMemberSystem:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-          enum:
-          - system
-        name:
-          type: string
-        handle:
-          type: string
-      required:
-      - id
-      - type
-      - name
-      - handle
-      additionalProperties: false
-    ChannelManifestEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/ChannelManifest'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
-      additionalProperties: false
-    PaginationMeta:
-      type: object
-      properties:
-        cursor:
-          type:
-          - string
-          - 'null'
-        hasMore:
-          type: boolean
-        total:
-          type: integer
-        historyCutoff:
-          type:
-          - object
-          - 'null'
-          properties:
-            beyondCount:
-              type: integer
-            cutoffAt:
-              type: string
-              format: date-time
-          required:
-          - beyondCount
-          - cutoffAt
-          additionalProperties: false
-      required:
-      - hasMore
-      additionalProperties: false
-    ReloadError:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - false
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: '`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED).'
-            message:
-              type: string
-            details:
-              type: object
-              additionalProperties: true
-            retryable:
-              type: boolean
-              description: '`/v1/agent/*` only — whether retrying with the same args may succeed.'
-            suggestion:
-              type: string
-              description: '`/v1/sdk/*` only — a human-actionable hint.'
-            docs:
-              type: string
-              description: '`/v1/sdk/*` only — a documentation URL.'
-          required:
-          - code
-          - message
-          additionalProperties: false
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - error
-      additionalProperties: false
-    ChannelMembersPage:
-      type: object
-      properties:
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChannelMember'
-        hasMore:
-          type: boolean
-        cursor:
-          type:
-          - string
-          - 'null'
-      required:
-      - members
-      - hasMore
-      - cursor
-      additionalProperties: false
     Channel:
       type: object
       properties:
@@ -382,7 +254,7 @@ components:
       - purpose
       - type
       additionalProperties: false
-    ChannelMembersEnvelope:
+    ChannelManifestEnvelope:
       type: object
       properties:
         success:
@@ -390,24 +262,7 @@ components:
           enum:
           - true
         data:
-          $ref: '#/components/schemas/ChannelMembersPage'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
-      additionalProperties: false
-    ChannelListEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Channel'
+          $ref: '#/components/schemas/ChannelManifest'
         meta:
           $ref: '#/components/schemas/Meta'
       required:
@@ -465,21 +320,7 @@ components:
       - memberType
       - joinedAt
       additionalProperties: false
-    Meta:
-      type: object
-      properties:
-        requestId:
-          type: string
-        timestamp:
-          type: string
-          format: date-time
-        pagination:
-          $ref: '#/components/schemas/PaginationMeta'
-      required:
-      - requestId
-      - timestamp
-      additionalProperties: false
-    ChannelMemberHuman:
+    ChannelMemberSystem:
       type: object
       properties:
         id:
@@ -487,7 +328,7 @@ components:
         type:
           type: string
           enum:
-          - human
+          - system
         name:
           type: string
         handle:
@@ -497,6 +338,23 @@ components:
       - type
       - name
       - handle
+      additionalProperties: false
+    ChannelListEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Channel'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
       additionalProperties: false
     ChannelMemberAgent:
       type: object
@@ -520,6 +378,148 @@ components:
       - name
       - handle
       - agentType
+      additionalProperties: false
+    ChannelMembersEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/ChannelMembersPage'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    PaginationMeta:
+      type: object
+      properties:
+        cursor:
+          type:
+          - string
+          - 'null'
+        hasMore:
+          type: boolean
+        total:
+          type: integer
+        historyCutoff:
+          type:
+          - object
+          - 'null'
+          properties:
+            beyondCount:
+              type: integer
+            cutoffAt:
+              type: string
+              format: date-time
+          required:
+          - beyondCount
+          - cutoffAt
+          additionalProperties: false
+      required:
+      - hasMore
+      additionalProperties: false
+    ChannelMembersPage:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelMember'
+        hasMore:
+          type: boolean
+        cursor:
+          type:
+          - string
+          - 'null'
+      required:
+      - members
+      - hasMore
+      - cursor
+      additionalProperties: false
+    ChannelMemberHuman:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - human
+        name:
+          type: string
+        handle:
+          type: string
+      required:
+      - id
+      - type
+      - name
+      - handle
+      additionalProperties: false
+    ReloadError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: '`/v1/agent/*` returns lowercase coarse codes (permission_denied, channel_not_member, not_found, invalid_input, conflict, rate_limited, upstream_unavailable, internal_error). `/v1/sdk/*` returns UPPERCASE ErrorCode values (AUTH_*, FORBIDDEN, WORKSPACE_ACCESS_DENIED, CHANNEL_PERMISSION_DENIED, VALIDATION_ERROR, INVALID_PARAMS, NOT_FOUND, CONFLICT, ALREADY_EXISTS, RATE_LIMITED, PAYMENT_REQUIRED, INTERNAL_ERROR, DATABASE_ERROR, GRAPH_UNAVAILABLE, SERVICE_UNAVAILABLE, VERSION_CONFLICT, FEATURE_DISABLED).'
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+            retryable:
+              type: boolean
+              description: '`/v1/agent/*` only — whether retrying with the same args may succeed.'
+            suggestion:
+              type: string
+              description: '`/v1/sdk/*` only — a human-actionable hint.'
+            docs:
+              type: string
+              description: '`/v1/sdk/*` only — a documentation URL.'
+          required:
+          - code
+          - message
+          additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - error
+      additionalProperties: false
+    ChannelMember:
+      oneOf:
+      - $ref: '#/components/schemas/ChannelMemberHuman'
+      - $ref: '#/components/schemas/ChannelMemberAgent'
+      - $ref: '#/components/schemas/ChannelMemberSystem'
+      discriminator:
+        propertyName: type
+        mapping:
+          human: '#/components/schemas/ChannelMemberHuman'
+          agent: '#/components/schemas/ChannelMemberAgent'
+          system: '#/components/schemas/ChannelMemberSystem'
+    Meta:
+      type: object
+      properties:
+        requestId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      required:
+      - requestId
+      - timestamp
       additionalProperties: false
   securitySchemes:
     bearerAuth:
