@@ -227,6 +227,61 @@ paths:
       parameters: []
 components:
   schemas:
+    WorkspaceInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        memberCount:
+          type: integer
+        channelCount:
+          type: integer
+        agentCount:
+          type: integer
+      required:
+      - id
+      - name
+      - slug
+      - createdAt
+      - memberCount
+      - channelCount
+      - agentCount
+      additionalProperties: false
+    PaginationMeta:
+      type: object
+      properties:
+        cursor:
+          type:
+          - string
+          - 'null'
+        hasMore:
+          type: boolean
+        total:
+          type: integer
+        historyCutoff:
+          type:
+          - object
+          - 'null'
+          properties:
+            beyondCount:
+              type: integer
+            cutoffAt:
+              type: string
+              format: date-time
+          required:
+          - beyondCount
+          - cutoffAt
+          additionalProperties: false
+      required:
+      - hasMore
+      additionalProperties: false
     VerifyConnectionEnvelope:
       type: object
       properties:
@@ -268,96 +323,6 @@ components:
       - ok
       - message
       additionalProperties: false
-    WorkspaceInfoEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/WorkspaceInfo'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
-      additionalProperties: false
-    ResolvedIdentity:
-      type: object
-      properties:
-        id:
-          type: string
-        kind:
-          type: string
-          enum:
-          - user
-          - agent
-        displayName:
-          type: string
-        handle:
-          type: string
-      required:
-      - id
-      - kind
-      - displayName
-      - handle
-      additionalProperties: false
-    PaginationMeta:
-      type: object
-      properties:
-        cursor:
-          type:
-          - string
-          - 'null'
-        hasMore:
-          type: boolean
-        total:
-          type: integer
-        historyCutoff:
-          type:
-          - object
-          - 'null'
-          properties:
-            beyondCount:
-              type: integer
-            cutoffAt:
-              type: string
-              format: date-time
-          required:
-          - beyondCount
-          - cutoffAt
-          additionalProperties: false
-      required:
-      - hasMore
-      additionalProperties: false
-    WorkspaceInfo:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        slug:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        memberCount:
-          type: integer
-        channelCount:
-          type: integer
-        agentCount:
-          type: integer
-      required:
-      - id
-      - name
-      - slug
-      - createdAt
-      - memberCount
-      - channelCount
-      - agentCount
-      additionalProperties: false
     ReloadError:
       type: object
       properties:
@@ -395,7 +360,7 @@ components:
       - success
       - error
       additionalProperties: false
-    ResolvedIdentityEnvelope:
+    WorkspaceInfoEnvelope:
       type: object
       properties:
         success:
@@ -403,12 +368,32 @@ components:
           enum:
           - true
         data:
-          $ref: '#/components/schemas/ResolvedIdentity'
+          $ref: '#/components/schemas/WorkspaceInfo'
         meta:
           $ref: '#/components/schemas/Meta'
       required:
       - success
       - data
+      additionalProperties: false
+    ResolvedIdentity:
+      type: object
+      properties:
+        id:
+          type: string
+        kind:
+          type: string
+          enum:
+          - user
+          - agent
+        displayName:
+          type: string
+        handle:
+          type: string
+      required:
+      - id
+      - kind
+      - displayName
+      - handle
       additionalProperties: false
     Meta:
       type: object
@@ -423,6 +408,21 @@ components:
       required:
       - requestId
       - timestamp
+      additionalProperties: false
+    ResolvedIdentityEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/ResolvedIdentity'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
       additionalProperties: false
   securitySchemes:
     bearerAuth:

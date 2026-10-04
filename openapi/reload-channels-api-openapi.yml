@@ -234,128 +234,6 @@ paths:
           description: The channel ID to inspect.
 components:
   schemas:
-    Channel:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        purpose:
-          type:
-          - string
-          - 'null'
-        type:
-          type: string
-          description: public | private | dm | …
-      required:
-      - id
-      - name
-      - purpose
-      - type
-      additionalProperties: false
-    ChannelManifestEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/ChannelManifest'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
-      additionalProperties: false
-    ChannelManifest:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        purpose:
-          type:
-          - string
-          - 'null'
-        type:
-          type: string
-        domain:
-          type:
-          - string
-          - 'null'
-        irisEnabled:
-          type: boolean
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChannelManifestMember'
-        recentMessageCount:
-          type: integer
-          description: Messages in the last 24h.
-      required:
-      - id
-      - name
-      - purpose
-      - type
-      - domain
-      - irisEnabled
-      - members
-      - recentMessageCount
-      additionalProperties: false
-    ChannelManifestMember:
-      type: object
-      properties:
-        memberId:
-          type: string
-        memberType:
-          type: string
-        joinedAt:
-          type: string
-          format: date-time
-      required:
-      - memberId
-      - memberType
-      - joinedAt
-      additionalProperties: false
-    ChannelMemberSystem:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-          enum:
-          - system
-        name:
-          type: string
-        handle:
-          type: string
-      required:
-      - id
-      - type
-      - name
-      - handle
-      additionalProperties: false
-    ChannelListEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Channel'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
-      additionalProperties: false
     ChannelMemberAgent:
       type: object
       properties:
@@ -378,21 +256,6 @@ components:
       - name
       - handle
       - agentType
-      additionalProperties: false
-    ChannelMembersEnvelope:
-      type: object
-      properties:
-        success:
-          type: boolean
-          enum:
-          - true
-        data:
-          $ref: '#/components/schemas/ChannelMembersPage'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - success
-      - data
       additionalProperties: false
     PaginationMeta:
       type: object
@@ -422,42 +285,20 @@ components:
       required:
       - hasMore
       additionalProperties: false
-    ChannelMembersPage:
+    ChannelManifestEnvelope:
       type: object
       properties:
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChannelMember'
-        hasMore:
+        success:
           type: boolean
-        cursor:
-          type:
-          - string
-          - 'null'
-      required:
-      - members
-      - hasMore
-      - cursor
-      additionalProperties: false
-    ChannelMemberHuman:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
           enum:
-          - human
-        name:
-          type: string
-        handle:
-          type: string
+          - true
+        data:
+          $ref: '#/components/schemas/ChannelManifest'
+        meta:
+          $ref: '#/components/schemas/Meta'
       required:
-      - id
-      - type
-      - name
-      - handle
+      - success
+      - data
       additionalProperties: false
     ReloadError:
       type: object
@@ -496,17 +337,41 @@ components:
       - success
       - error
       additionalProperties: false
-    ChannelMember:
-      oneOf:
-      - $ref: '#/components/schemas/ChannelMemberHuman'
-      - $ref: '#/components/schemas/ChannelMemberAgent'
-      - $ref: '#/components/schemas/ChannelMemberSystem'
-      discriminator:
-        propertyName: type
-        mapping:
-          human: '#/components/schemas/ChannelMemberHuman'
-          agent: '#/components/schemas/ChannelMemberAgent'
-          system: '#/components/schemas/ChannelMemberSystem'
+    Channel:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        purpose:
+          type:
+          - string
+          - 'null'
+        type:
+          type: string
+          description: public | private | dm | …
+      required:
+      - id
+      - name
+      - purpose
+      - type
+      additionalProperties: false
+    ChannelMembersEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          $ref: '#/components/schemas/ChannelMembersPage'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
     Meta:
       type: object
       properties:
@@ -520,6 +385,141 @@ components:
       required:
       - requestId
       - timestamp
+      additionalProperties: false
+    ChannelMember:
+      oneOf:
+      - $ref: '#/components/schemas/ChannelMemberHuman'
+      - $ref: '#/components/schemas/ChannelMemberAgent'
+      - $ref: '#/components/schemas/ChannelMemberSystem'
+      discriminator:
+        propertyName: type
+        mapping:
+          human: '#/components/schemas/ChannelMemberHuman'
+          agent: '#/components/schemas/ChannelMemberAgent'
+          system: '#/components/schemas/ChannelMemberSystem'
+    ChannelMemberHuman:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - human
+        name:
+          type: string
+        handle:
+          type: string
+      required:
+      - id
+      - type
+      - name
+      - handle
+      additionalProperties: false
+    ChannelManifestMember:
+      type: object
+      properties:
+        memberId:
+          type: string
+        memberType:
+          type: string
+        joinedAt:
+          type: string
+          format: date-time
+      required:
+      - memberId
+      - memberType
+      - joinedAt
+      additionalProperties: false
+    ChannelListEnvelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Channel'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - success
+      - data
+      additionalProperties: false
+    ChannelMembersPage:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelMember'
+        hasMore:
+          type: boolean
+        cursor:
+          type:
+          - string
+          - 'null'
+      required:
+      - members
+      - hasMore
+      - cursor
+      additionalProperties: false
+    ChannelMemberSystem:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - system
+        name:
+          type: string
+        handle:
+          type: string
+      required:
+      - id
+      - type
+      - name
+      - handle
+      additionalProperties: false
+    ChannelManifest:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        purpose:
+          type:
+          - string
+          - 'null'
+        type:
+          type: string
+        domain:
+          type:
+          - string
+          - 'null'
+        irisEnabled:
+          type: boolean
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelManifestMember'
+        recentMessageCount:
+          type: integer
+          description: Messages in the last 24h.
+      required:
+      - id
+      - name
+      - purpose
+      - type
+      - domain
+      - irisEnabled
+      - members
+      - recentMessageCount
       additionalProperties: false
   securitySchemes:
     bearerAuth:
