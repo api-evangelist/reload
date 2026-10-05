@@ -1,0 +1,12 @@
+{
+ "url": "https://docs.reload.chat/api-reference/openapi.json",
+ "requested_url": "https://docs.reload.chat/api-reference/openapi.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 181670,
+ "sha256": "09e53f910e5d4d08823effc741406eb6d9e0f3026d6dbe16f4ce2245e1fcfe77",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
